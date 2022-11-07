@@ -1,0 +1,7 @@
+<template>
+  <select data-ruleid={rule.id} onchange={onValueDidChange}  multiple={allowmultiselect} selectedindex='0'>
+    <template for:each={options} for:item='v'>
+      <option key={v.name} value={v.name} selected={v.selected}>{ v.name}</option>
+    </template>
+  </select>
+</template>

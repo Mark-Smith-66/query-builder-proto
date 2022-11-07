@@ -1,0 +1,28 @@
+<template>
+	<div class="app">
+		<c-trait-drawer></c-trait-drawer>
+		<div class="content">
+			<lightning-layout class='top-area' vertical-align='end'>
+				<lightning-layout-item class='query-area'>
+					<label>Query</label>
+					<div class={queryBoxClass}>
+						<lightning-formatted-rich-text
+								value={readableQuery}
+						></lightning-formatted-rich-text>
+					</div>
+				</lightning-layout-item>
+				<lightning-layout-item class='count-area'>
+				</lightning-layout-item>
+			</lightning-layout>
+			<c-group grp={query} onaddgroup={addRuleGroup} 
+				ondeletegroup={deleteRuleGroup}
+				onaddrule={addRule}
+				ondeleterule={deleteRule}
+				onaddtraittorule={addTraitToRule}
+				onruleoperatorchange={operatorChange}
+				onrulevaluechange={ruleValueChange}
+			>
+			</c-group>
+		</div>
+	</div>
+</template>

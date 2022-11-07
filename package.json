@@ -1,0 +1,7 @@
+{
+  "name": "@wcd/mark-smith-66.lwc-la2l6cmd",
+  "version": "0.0.0",
+  "scripts": {
+    "serve": "npx wcd-cli@latest serve TSPnwG4fMCgpKU28XKqf --open"
+  }
+}

@@ -1,0 +1,52 @@
+
+.trait-filter-area {
+    position: fixed;
+    width: 200px;
+    height: 100vh;
+    background-color: #f0f3f5;
+    z-index: 1;
+    padding: 8px 4px 4px 4px;
+}
+.drawer-title {
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.filter-data {
+  flex-direction: column;
+}
+.filter-section {
+  margin-bottom: 8px;
+}
+.filter-section label {
+  display: block;
+}
+.filter-section input, .filter-section select {
+  width: 100%;
+}
+.trait-area {
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+  flex-direction: column;
+}
+.selectable-trait {
+  padding:4px;
+  border-radius: 4px;
+  border: 2px dotted #000;
+  overflow-wrap: anywhere;
+  margin-bottom: 8px;
+}
+.taxonomy-area {
+  margin-top: 4px;
+  font-size: 10px;
+}
+.trait-name {
+  font-weight: 700;
+}
+.cat-name {
+  color: #7a267b;
+  font-weight: 600;
+}
+.subcat-name {
+  color: #21528c;
+  font-weight: 600;
+}

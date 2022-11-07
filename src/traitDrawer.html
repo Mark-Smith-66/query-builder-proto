@@ -1,0 +1,47 @@
+<template>
+  <div class="trait-filter-area">
+    <lightning-layout horizontal-align="center" class='drawer-title'> 
+      Traits by Category
+    </lightning-layout>
+    <lightning-layout class='filter-data'>
+      <lightning:layoutItem class="filter-section">
+          <label for="categories">Filter...</label>
+          <input type='text' id='filter' onkeyup={onFilterChange}></input>
+      </lightning:layoutItem>
+      <lightning:layoutItem class="filter-section">
+        <label for="categories">Category</label>
+        <select id="categories" onchange={onSelectCategory}>
+          <option value=''></option>
+          <template for:each={allCategories} for:item='c'>
+            <option key={c.cat} value={c.cat}>{c.cat}</option>
+          </template>
+        </select>
+      </lightning:layoutItem>
+      <lightning:layoutItem class="filter-section">
+        <label for="subCats">Sub Category</label>
+        <select id="subcats" onchange={onSelectSubCategory}>
+          <option value=''></option>
+          <template for:each={subCategories} for:item='sc'>
+            <option key={sc} value={sc}>{sc}</option>
+          </template>
+        </select>
+      </lightning:layoutItem>
+    </lightning-layout>
+    <lightning-layout class='trait-area'>
+        <template for:each={traits} for:item='t'>
+          <div id='{t.TRAIT_ID}' key={t.TRAIT_ID} class="selectable-trait" 
+            draggable=true            
+            ondragstart={onDragStart}
+            trait={t}
+          >
+              <div class='trait-name'>{t.ALIAS}</div>
+              <div class='taxonomy-area'>
+                  <span class='cat-name'>{t.CATEGORY}</span>
+                  &gt;
+                  <span class="subcat-name">{t.SUB_CATEGORY}</span>
+              </div>
+          </div>
+        </template>
+    </lightning-layout>
+  </div>
+</template>

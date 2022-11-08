@@ -12,6 +12,24 @@
 					</div>
 				</lightning-layout-item>
 				<lightning-layout-item class='count-area'>
+					<div class="count-box">
+						<div class="count-container">
+							<div class="count-dimensions-area">
+								<div class='counts-disabled-area' if:false={hasCounts}>&lt;Not Calculated&gt;</div>
+								<div if:true={hasCounts}>
+									<template for:each={counts} for:item="count">
+										<div key={count.name}>
+											<span class='count-label'>{count.name}:</span>
+											<span class='count-value'>{count.cnt}</span>
+										</div>
+									</template>
+								</div>
+							</div>
+							<div class='count-button'>
+								<button onclick={getCounts} disabled={disableCounts}>Get Counts</button>
+							</div>
+						</div>
+					</div>
 				</lightning-layout-item>
 			</lightning-layout>
 			<c-group grp={query} onaddgroup={addRuleGroup} 

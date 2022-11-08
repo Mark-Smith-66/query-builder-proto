@@ -24,8 +24,6 @@ export default class Rule extends LightningElement {
     const ops = []
 
     if (this.rule.trait) {
-      // TODO: map name/value operator pairs as needed for Data API
-
       // Parse trait value/valueId pairs
       const vals = this.rule.trait.VAL_OPTS.split('|')
       ops.push({ name: '=', value: '=', selected: false})

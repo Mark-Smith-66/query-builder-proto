@@ -16,11 +16,11 @@ p {
     width: 100%;
 }
 .top-area {
-    height: 150px;
+    height: 200px;
     padding: 8px;
 }
 .query-area {
-    width: 66%;
+    width: calc(100vw - 250px);
 }
 .query-area label{
     font-weight: 700;
@@ -34,7 +34,50 @@ p {
     white-space: pre;
     font-size: 10px;
     padding: 6px;
+    border-radius: 8px;
 }
 .query-box.invalid {
     border-color: #ff1744;
+}
+.count-area {
+    width: 33%;
+    margin: 0px 15px;
+}
+.count-box {
+    height: 180px;
+    background-color: #f0f3f5;
+    font-size: 10px;
+    padding: 6px;
+    width: 220px;
+    border: 1px solid #000;
+    border-radius: 8px;
+}
+.count-container {
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+.count-container div {
+    width: 100%;
+}
+.counts-disabled-area {
+    text-align: center;
+}
+.count-label {
+    font-weight: 700;
+    color: #7a267b
+}
+.count-value {
+    padding-left: 4px;
+    float: right;
+    clear: both;
+}
+.count-button {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+}
+.count-button button:disabled {
+    opacity: .3;
 }

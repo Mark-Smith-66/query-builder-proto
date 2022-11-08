@@ -7,6 +7,9 @@ export default class App extends LightningElement {
     operator: 'AND',
     data: [],
   }
+  @track countsQuery;
+  @track counts;
+
   colors = {
     err: '#ff1744',
     rule: '#21528c',
@@ -260,13 +263,76 @@ export default class App extends LightningElement {
     return this.isInvalidQuery(this._query)
   }
 
+  // Counts disabled if to query data or query is invalid
+  get disableCounts() {
+    const isDisabled =  this._query.data.length === 0 || this.invalidQuery 
+    return isDisabled
+  }
+
   // Return the parsed Human-Readable Query
   get readableQuery() {
     let s = this.parseQuery(this._query)
     return s
   }
 
+  // Only show counts if counts are present and they are calculated
+  // for the current query
+  get hasCounts() {
+    return this.counts && !this.disableCounts && (this.counts && JSON.stringify(this._query) === this.countsQuery)
+  }
 
+  // Get Counts for Query
+  getCounts = () => {
+    const apiQuery = this.getQueryJSON()
+    this.countsQuery = JSON.stringify(this._query)
+    alert(JSON.stringify(apiQuery))
+    this.counts =  [
+       { name: 'DTV_ADDRESSABLE', cnt:  parseInt(`${Math.random() * 100000}`, 10).toLocaleString()},
+       { name: 'DTV_STB_AAF', cnt: parseInt(`${Math.random() * 100000}`, 10).toLocaleString()},
+       { name: 'DTV_STB_VOD_ENABLED', cnt: parseInt(`${Math.random() * 100000}`, 10).toLocaleString()},
+       { name: 'DTV_STB_VOD', cnt: parseInt(`${Math.random() * 100000}`, 10).toLocaleString()},
+       { name: 'OV_ANY', cnt: parseInt(`${Math.random() * 100000}`, 10).toLocaleString()},
+       { name: 'OV_CTV', cnt: parseInt(`${Math.random() * 100000}`, 10).toLocaleString()},
+       { name: 'OV_AAF', cnt: parseInt(`${Math.random() * 100000}`, 10).toLocaleString()},
+       { name: 'OV_MOBILE', cnt: parseInt(`${Math.random() * 100000}`, 10).toLocaleString()},
+       { name: 'OV_PC', cnt: parseInt(`${Math.random() * 100000}`, 10).toLocaleString()}
+    ]
+  }
+
+  
+  // TODO: Proper name/value mapping as needed by Data API
+  mapOperator = (o) => {
+    return o;
+  }
+
+  // Get Query JSON 
+  getQueryJSON = (qs = this._query) => {
+    let jq = {}
+    if (qs.isGroup) {
+      jq = {
+        operator: this.mapOperator(qs.operator),
+        value: []
+      }
+      qs.data.forEach(r => {
+        jq.value.push(this.getQueryJSON(r))
+      })
+    } else {
+      jq = {
+        operator: this.mapOperator(qs.operator),
+        trait: qs.trait.TRAIT,
+        trait_id: qs.trait.TRAIT_ID,
+        values: qs.value.map(v => {
+          const vPair = v.split('^')
+          return {
+            value: vPair[0],
+            value_id: vPair[1]
+          }
+        })
+      }
+    }
+
+    return jq
+  }
 
   // Parse query JSON to html string
   // This is quick and dirty 0 subject to change

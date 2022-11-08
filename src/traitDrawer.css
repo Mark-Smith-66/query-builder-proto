@@ -6,6 +6,7 @@
     background-color: #f0f3f5;
     z-index: 1;
     padding: 8px 4px 4px 4px;
+    border-right: 1px solid #aaa;
 }
 .drawer-title {
   font-weight: 700;

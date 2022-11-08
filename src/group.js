@@ -30,7 +30,6 @@ export default class Group extends LightningElement {
 
   // Get conditions allowed for Group
   get conditions() {
-    // TODO: Proper name/value mapping as needed by Data API
     const conds = []
     conds.push({ name: 'AND', value: 'AND', selected: false})
     conds.push({ name: 'OR', value: 'OR', selected: false})

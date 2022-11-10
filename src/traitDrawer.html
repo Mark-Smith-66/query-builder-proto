@@ -1,14 +1,14 @@
 <template>
-  <div class="trait-filter-area">
-    <lightning-layout horizontal-align="center" class='drawer-title'> 
+  <div class="slds-grid slds-wrap slds-is-fixed slds-grid_vertical-align-start slds-grid_align-center trait-filter-column">
+    <div class='slds-col slds-size_1-of-1 drawer-title'> 
       Traits by Category
-    </lightning-layout>
-    <lightning-layout class='filter-data'>
-      <lightning:layoutItem class="filter-section">
+    </div>
+    <div class='slds-col slds-size_1-of-1'>
+      <div class="filter-section-row">
           <label for="categories">Filter...</label>
           <input type='text' id='filter' onkeyup={onFilterChange}></input>
-      </lightning:layoutItem>
-      <lightning:layoutItem class="filter-section">
+      </div>
+      <div class="filter-section-row">
         <label for="categories">Category</label>
         <select id="categories" onchange={onSelectCategory}>
           <option value=''></option>
@@ -16,8 +16,8 @@
             <option key={c.cat} value={c.cat}>{c.cat}</option>
           </template>
         </select>
-      </lightning:layoutItem>
-      <lightning:layoutItem class="filter-section">
+      </div>
+      <div class="filter-section-row">
         <label for="subCats">Sub Category</label>
         <select id="subcats" onchange={onSelectSubCategory}>
           <option value=''></option>
@@ -25,9 +25,12 @@
             <option key={sc} value={sc}>{sc}</option>
           </template>
         </select>
-      </lightning:layoutItem>
-    </lightning-layout>
-    <lightning-layout class='trait-area'>
+      </div>
+      <div class="directions-section-row">
+          {directions}
+      </div>
+    </div>
+    <div class='slds-col slds-size_1-of-1 filtered-trait-area'>
         <template for:each={traits} for:item='t'>
           <div id='{t.TRAIT_ID}' key={t.TRAIT_ID} class="selectable-trait" 
             draggable=true            
@@ -42,6 +45,6 @@
               </div>
           </div>
         </template>
-    </lightning-layout>
+    </div>
   </div>
 </template>

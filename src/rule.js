@@ -37,7 +37,7 @@ export default class Rule extends LightningElement {
 
       // Set the selected operator for this rule
       ops.forEach(o => {
-        o.selected = this.rule.trait.operator === o.value
+        o.selected = this.rule.operator === o.value
       })
     }
 

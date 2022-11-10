@@ -157,6 +157,15 @@ export default class App extends LightningElement {
         // Add trait data to rule
         rule.trait = trait
 
+        const traitVals = trait.VAL_OPTS.split('|')
+
+        // Default operator/value if only a single
+        // value can be chosen for trait
+        if (traitVals.length === 1) {
+          rule.operator = '='
+          rule.value = [traitVals[0]]
+        }
+
         // replace query
         this._query = newQuery
       }
@@ -255,7 +264,7 @@ export default class App extends LightningElement {
 
   get queryBoxClass() {
     const invalid = this.isInvalidQuery(this._query)
-    return invalid ? 'query-box invalid' : 'query-box'
+    return invalid ? 'slds-card query-box invalid' : 'slds-card query-box'
   }
 
   // Getter for if query is missing data
@@ -279,6 +288,14 @@ export default class App extends LightningElement {
   // for the current query
   get hasCounts() {
     return this.counts && !this.disableCounts && (this.counts && JSON.stringify(this._query) === this.countsQuery)
+  }
+
+  get noCountsText() {
+    if (this.invalidQuery) {
+      return '<span style="color: #ff1744">&lt;Invalid Query&gt;</span>'
+    }
+
+    return '<span>&lt;Not Calculated&gt;</span>'
   }
 
   // Get Counts for Query

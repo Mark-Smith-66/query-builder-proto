@@ -1,40 +1,56 @@
+@import './main.css';
 
-.trait-filter-area {
-    position: fixed;
-    width: 200px;
+/* Static column for trait selection */
+.trait-filter-column {
+    width: 280px;
     height: 100vh;
-    background-color: #f0f3f5;
+    background-color: var(--primary-light-color);
     z-index: 1;
     padding: 8px 4px 4px 4px;
-    border-right: 1px solid #aaa;
+    border-right: 1px solid #666;
 }
+
+/* Title */
 .drawer-title {
   font-weight: 700;
   margin-bottom: 8px;
+  text-align: center;
 }
-.filter-data {
-  flex-direction: column;
-}
-.filter-section {
+
+/* Filter Rows */
+.filter-section-row {
   margin-bottom: 8px;
 }
-.filter-section label {
+.filter-section-row label {
   display: block;
 }
-.filter-section input, .filter-section select {
+.filter-section-row input, .filter-section-row select {
   width: 100%;
 }
-.trait-area {
-  max-height: calc(100vh - 140px);
+
+/* Directions Row */
+.directions-section-row {
+  padding: 4px 8px 8px 8px;
+  color: #aaa;
+  font-style: italic;
+  text-align: center;
+}
+
+/* Filtered trait area */
+.filtered-trait-area {
+  max-height: calc(100vh - 220px);
   overflow-y: auto;
   flex-direction: column;
 }
+
+/* Selectable Traits */
 .selectable-trait {
   padding:4px;
   border-radius: 4px;
   border: 2px dotted #000;
   overflow-wrap: anywhere;
   margin-bottom: 8px;
+  background-color: #fff;
 }
 .taxonomy-area {
   margin-top: 4px;

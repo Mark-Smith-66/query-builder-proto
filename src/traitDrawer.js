@@ -12,16 +12,18 @@ export default class Rule extends LightningElement {
    @track traits = [];
    @track filterTerm = null;
    
-
    constructor() {
      super()
+
+     traitmeta.forEach(t => {
+       
+       // Translate/map any trait meta data
+       this.massageTraitData(t)
+     })
      
      // Sort traits by Category, then Sub-Category, then ALIAS
      traitmeta.sort((a, b) => {
 
-       // Translate empty category/sub-category names
-       this.massageCategory(a)
-       this.massageCategory(b)
         const catCompare = a.CATEGORY.toUpperCase().localeCompare(b.CATEGORY.toUpperCase())
         if (catCompare !== 0) return catCompare
         const subCompare = a.SUB_CATEGORY.toUpperCase().localeCompare(
@@ -41,15 +43,69 @@ export default class Rule extends LightningElement {
   }
 
   // Massage Category/Sub-Category names
-  massageCategory = (t) => {
+  massageTraitData = (t) => {
+    // Special values are sorted non-alphabetically
+    const mapVal = (v) => {
+      const vmap = [
+        {v: 'YES', w: 'l'},
+        {v: 'EXTREMELY LIKELY', w:  'a'},
+        {v: 'HIGHLY LIKELY', w:  'b'},
+        {v: 'VERY LIKELY', w:  'c'},
+        {v: 'MORE THAN LIKELY', w:  'd'},
+        {v: 'LIKELY', w: 'e'},
+        {v: 'SOMEWHAT LIKELY', w:  'f'},
+        {v: 'UNLIKELY', w: 'g'},
+        {v: 'SOMEWHAT UNLIKELY', w:  'h'},
+        {v: 'VERY UNLIKELY', w: 'i'},
+        {v: 'HIGHLY UNLIKELY', w:  'j'},
+        {v: 'EXTREMELY UNLIKELY', w:  'k'},
+        {v: 'NO', w:  'm' }
+      ]
+
+      const weight = vmap.find(o => o.v === v.toUpperCase())
+      return weight ? weight.w : v
+    }
+
+    // Money/Money Range values are sorted by initial value as int
+    const compareMoney = (a, b) => {
+      if (a.startsWith('$') && b.startsWith('$')) {
+        const aval = a.split('-')[0].substring(1).replace('+', '')
+        const bval = b.split('-')[0].substring(1).replace('+', '')
+        return parseInt(aval)-parseInt(bval)
+      }
+
+      return 0
+    }
     // TODO: map t.CATEGORY to user-friendly name
     if (!t.SUB_CATEGORY || t.SUB_CATEGORY === '' || t.SUB_CATEGORY === 'NULL')
           t.SUB_CATEGORY = '(none)'
+
+    // Sort VAL_OPTS
+    const vals = t.VAL_OPTS.split('|')
+    vals.sort((a, b) => {
+      let aval = a.split('^')[0];
+      let bval = b.split('^')[0]
+      const compareSpecial = compareMoney(aval, bval)
+      if (compareSpecial !== 0) return compareSpecial;
+
+      aval = mapVal(aval)
+      bval = mapVal(bval)
+      return aval.toUpperCase().localeCompare(bval)
+    })
+
+    t.VAL_OPTS = vals.join('|')
   }
 
   // Distinct Categories
   get allCategories() {
     return this.categories
+  }
+
+  // Get Directions to display
+  get directions() {
+    return this.traits.length > 0 ?
+      'Drag a trait to any unfilled rule area to add...' :
+      'Filter traits using above controls...'
   }
 
   // Handle Category Select

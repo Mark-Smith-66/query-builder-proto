@@ -1,68 +1,99 @@
-h1 {
-    color: rgb(0, 112, 210);
-}
-p {
-    font-family: 'Salesforce Sans', Arial, sans-serif;
-    color: rgb(62, 62, 60);
-}
+@import './main.css';
+
+/* Main Wrapper */
 .app {
     background-color: #fff;
     height: 100vh;
     overflow: auto;
     margin: -16px;
 }
+
+/* Content (minus trait drawer - note padding */
 .content {
-    padding-left: 200px;
+    padding-left: 280px;
     width: 100%;
 }
+
+/* Container for query/count display */
 .top-area {
-    height: 200px;
-    padding: 8px;
+    height: 250px;
+    margin: 8px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #ccc;
 }
-.query-area {
-    width: calc(100vw - 250px);
+
+/* Force label/inputs full-width */
+.query-column label, .query-column input {
+    display: block;
+    width: 100%;
 }
-.query-area label{
+.query-column label{
     font-weight: 700;
 }
+
+/* Container for Query label/indicator */
+.query-header {
+    margin-top: 10px;
+}
+.query-header svg {
+    fill: var(--error-color);
+    height: 20px;
+}
+
+/* Human readable query container */
 .query-box {
-    height: 85px;
-    max-height: 150px;
+    height: 120px;
     overflow: auto;
-    background-color: #f0f3f5;
-    border: 1px solid #000;
+    background-color: var(--primary-light-color);
     white-space: pre;
     font-size: 10px;
     padding: 6px;
-    border-radius: 8px;
 }
 .query-box.invalid {
-    border-color: #ff1744;
+    border-color: var(--error-color);
 }
-.count-area {
-    width: 33%;
-    margin: 0px 15px;
+
+/* Column for HH counts */
+.counts-column {
+    max-width: 300px;
 }
+
+/* HH Counts container */
 .count-box {
-    height: 180px;
-    background-color: #f0f3f5;
+    height: 200px;
+    background-color: var(--primary-light-color);
     font-size: 10px;
     padding: 6px;
-    width: 220px;
-    border: 1px solid #000;
     border-radius: 8px;
+    margin-left: 8px;
 }
 .count-container {
     height: 100%;
-    width: 100%;
-    position: relative;
 }
-.count-container div {
+
+/* Counts Header */
+.counts-header {
     width: 100%;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    word-break: normal;
+    overflow-wrap: anywhere;
 }
+.counts-header svg {
+    height: 20px;
+    margin-top: -3px;
+}
+
+/* Center non-HH count text */
 .counts-disabled-area {
     text-align: center;
 }
+
+/* Count Label/Values */
 .count-label {
     font-weight: 700;
     color: #7a267b
@@ -72,10 +103,10 @@ p {
     float: right;
     clear: both;
 }
+
+/* Run Counts Button */
 .count-button {
     width: 100%;
-    position: absolute;
-    bottom: 0;
     text-align: center;
 }
 .count-button button:disabled {

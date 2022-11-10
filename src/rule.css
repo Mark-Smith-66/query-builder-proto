@@ -1,20 +1,16 @@
+@import './main.css';
+
+/* Rule Wrapper */
 .rule-wrapper {
   position: relative;
   width: 100%;
 }
-.delete-icon {
-  width: 20px;
-  height: 20px;
-  position: absolute;
-  top: calc(50% - 10px);
-  right: 10px;
-  z-index: 100;
-  padding: 0;
-}
+
+/* Rule Box Styles */
 .rule {
   margin: 8px 4px 8px 0px;
   padding: 15px 40px 15px 8px;
-  background-color: #f0f3f5;
+  background-color: var(--primary-light-color);
   border-radius: 4px;
   width: 100%;
   min-height: 70px;
@@ -33,44 +29,24 @@
   border: 2px solid #000;
 }
 
-.connection-area {
-  width: 12px;
-  display: inline-block;
-}
- .connection-area::before {
-    content: "";
-    position: relative;
-    left: 0px;
-    top: 0%;
-    height: 50%;
-    border-left: 2px solid #000;
-    border-bottom: 2px solid #000;
-    display: block;
-}
-.not-last-child::after {
-    content: "";
-    position: relative;
-    left: 0px;
-    top: 0%;
-    height: 50%;
-    border-left: 2px solid #000;
-    display: block;
-}
-.trait-data {
-  width: 60%;
-  max-width: 60%;
-}
-.operator-data {
-  min-width: 120px;
-}
-.operator-data label {
+/* Operator column */
+.operator-column label {
   display: block;
   font-weight: 700;
 }
-.value-data {
-  min-width: 120px;
-}
-.value-data label {
+
+/* Value column */
+.value-column label {
   display: block;
   font-weight: 700;
+}
+
+/* Delete Icon container */
+.delete-icon-container {
+  width: 20px;
+  height: 20px;
+  top: calc(50% - 10px);
+  right: 10px;
+  z-index: 100;
+  padding: 0;
 }

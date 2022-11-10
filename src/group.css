@@ -1,3 +1,6 @@
+@import './main.css';
+
+/* Rule Group */
 .rule-group {
     margin: 12px 16px 8px 0px !important;
     padding: 8px;
@@ -17,43 +20,22 @@
   background-color: #edece9;
   border: 2px solid #666;
 }
-.group-actions-container {
-  width: 100%;
-}
+
+/* Space buttons apart */
 .button-container button {
   margin-right: 8px;
 }
-.connection-area {
-  width: 12px;
-  display: inline-block;
-}
- .connection-area::before {
-    content: "";
-    position: relative;
-    left: 0px;
-    top: 0%;
-    height: 50%;
-    border-left: 2px solid #000;
-    border-bottom: 2px solid #000;
-    display: block;
-}
-.not-last-child::after {
-    content: "";
-    position: relative;
-    left: 0px;
-    top: 0%;
-    height: 50%;
-    border-left: 2px solid #000;
-    display: block;
-}
-.children {
+
+/* Child container */
+.child-container {
   min-height: 0px;
   width: 100%;
 }
-.delete-box {
+
+/* Delete container */
+.delete-icon-container {
   width: 20px;
   height: 20px;
-  position: absolute;
   top: -10px;
   right: -10px;
   z-index: 100;

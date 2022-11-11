@@ -165,18 +165,18 @@ export default class Rule extends LightningElement {
 
   // Handle Drag Start
   onDragStart = (e) => {
+    e.dataTransfer.effectAllowed = 'move'
     // Serialize selected trait and set as transfer data
     const traitId = e.target.id.split('-')[0]
     const dragTrait = this.allTraits.find(t => t.TRAIT_ID == traitId)
     const dt = JSON.stringify(dragTrait)
     
-    e.dataTransfer.setData('text/plain', dt)
+    e.dataTransfer.setData('text/trait', dt)
     
   }
 
   // Handle drag
   onDrag = (e) =>{
     // Use move icon vs copy icon
-    e.dataTransfer.effectAllowed = 'move'
   }
 }

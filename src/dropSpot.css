@@ -1,0 +1,21 @@
+.drop-child-spot {
+  height: 5px;
+  margin-top: 4px;
+  width: 100%;
+}
+.drop-child-spot.drag {
+  height: 40px;
+}
+.connection-area {
+  width: 12px;
+  display: inline-block;
+}
+ .connection-area::before {
+    content: "";
+    position: relative;
+    left: 0px;
+    top: 0;
+    height: 100%;
+    border-left: 2px solid #000;
+    display: block;
+}

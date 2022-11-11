@@ -11,7 +11,26 @@
 /* Content (minus trait drawer - note padding */
 .content {
     padding-left: 280px;
+    margin-bottom: 40px;
     width: 100%;
+    height: calc(100% - 42px);
+    overflow: auto;
+}
+
+.footer {
+    bottom: 0;
+    left: 280px;
+    width: calc(100% - 280px);
+    padding: 8px;
+    background-color: #fff;
+    z-index: 1;
+    border-top: 1px solid #aaa;
+}
+.nav-button-container {
+    width: 100%;
+}
+.nav-button-container button {
+    margin-right: 8px;
 }
 
 /* Container for query/count display */
@@ -60,7 +79,7 @@
 
 /* HH Counts container */
 .count-box {
-    height: 200px;
+    height: 220px;
     background-color: var(--primary-light-color);
     font-size: 10px;
     padding: 6px;
@@ -69,6 +88,9 @@
 }
 .count-container {
     height: 100%;
+    word-break: normal;
+    overflow-wrap: anywhere;
+    overflow: auto;
 }
 
 /* Counts Header */
@@ -80,8 +102,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    word-break: normal;
-    overflow-wrap: anywhere;
+    padding-bottom: 6px;
 }
 .counts-header svg {
     height: 20px;
@@ -108,7 +129,4 @@
 .count-button {
     width: 100%;
     text-align: center;
-}
-.count-button button:disabled {
-    opacity: .3;
 }

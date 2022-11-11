@@ -4,10 +4,11 @@ export default class App extends LightningElement {
   @track _query = {
     id: 'root', 
     isGroup: true,
-    operator: 'AND',
+    operator: 'INTERSECT',
     data: [],
   }
   @track countsQuery;
+  @track savedQuery;
   @track counts;
 
   colors = {
@@ -69,9 +70,8 @@ export default class App extends LightningElement {
         parentId: pid,
         id: rid,
         isGroup: true,
-        operator: 'AND',
+        operator: 'INTERSECT',
         data: [],
-        idx: group.data.length,
         odd: !group.odd ? true : false
       })
       
@@ -114,13 +114,40 @@ export default class App extends LightningElement {
         isGroup: false,
         operator: null,
         values: null,
-        trait: null,
-        idx: group.data.length
+        trait: null
       })
 
       // replace query
       this._query = newQuery
     }
+  }
+
+  moveRule = (e) => {
+    const gid = e.detail.groupId
+    const id = e.detail.id
+    let toIndex = e.detail.moveIndex
+    const toGroup = e.detail.moveGroupId
+
+    let newQuery = JSON.parse(JSON.stringify(this._query))
+    let group = this.findGroup(newQuery, gid)
+    if (group) {
+      let fromIndex = group.data.findIndex(e => e.id === id)
+      if (fromIndex !== -1) {
+       if (toIndex > 1) toIndex = toIndex - 1;
+        console.log(`move ${id} from ${fromIndex} in ${gid} to ${toIndex} in ${toGroup}`)
+        const element = group.data.splice(fromIndex, 1)[0]; 
+        
+        let moveGroup = this.findGroup(newQuery, toGroup)
+        if (moveGroup) {
+          element.parentId = toGroup;
+          moveGroup.data.splice(toIndex, 0, element);
+        }
+        
+        // replace query
+        this._query = newQuery
+      }
+    }
+
   }
   
   // Handle Delete Rule event
@@ -162,7 +189,7 @@ export default class App extends LightningElement {
         // Default operator/value if only a single
         // value can be chosen for trait
         if (traitVals.length === 1) {
-          rule.operator = '='
+          rule.operator = 'EQUALS'
           rule.value = [traitVals[0]]
         }
 
@@ -273,9 +300,17 @@ export default class App extends LightningElement {
   }
 
   // Counts disabled if to query data or query is invalid
-  get disableCounts() {
+  get isCountsDisabled() {
     const isDisabled =  this._query.data.length === 0 || this.invalidQuery 
     return isDisabled
+  }
+
+  // Save is disabled if query is invalid or saved
+  get isSaveDisabled() {
+    if (this.isCountsDisabled) return true;
+
+    const apiQuery = JSON.stringify(this.getQueryJSON())
+    return this.savedQuery === apiQuery
   }
 
   // Return the parsed Human-Readable Query
@@ -287,7 +322,7 @@ export default class App extends LightningElement {
   // Only show counts if counts are present and they are calculated
   // for the current query
   get hasCounts() {
-    return this.counts && !this.disableCounts && (this.counts && JSON.stringify(this._query) === this.countsQuery)
+    return this.counts && !this.isCountsDisabled && (this.counts && JSON.stringify(this._query) === this.countsQuery)
   }
 
   get noCountsText() {
@@ -300,9 +335,10 @@ export default class App extends LightningElement {
 
   // Get Counts for Query
   getCounts = () => {
-    const apiQuery = this.getQueryJSON()
+    const apiQuery = JSON.stringify(this.getQueryJSON())
     this.countsQuery = JSON.stringify(this._query)
-    alert(JSON.stringify(apiQuery))
+    console.log(apiQuery)
+    alert(apiQuery)
     this.counts =  [
        { name: 'DTV_ADDRESSABLE', cnt:  parseInt(`${Math.random() * 100000}`, 10).toLocaleString()},
        { name: 'DTV_STB_AAF', cnt: parseInt(`${Math.random() * 100000}`, 10).toLocaleString()},
@@ -333,9 +369,10 @@ export default class App extends LightningElement {
       qs.data.forEach(r => {
         jq.value.push(this.getQueryJSON(r))
       })
-    } else {
+    } else if (qs.trait ) {
+
       jq = {
-        operator: this.mapOperator(qs.operator),
+        operator: qs.operator,
         trait: qs.trait.TRAIT,
         trait_id: qs.trait.TRAIT_ID,
         values: qs.value.map(v => {

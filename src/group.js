@@ -4,7 +4,7 @@ import { LightningElement, api, track } from "lwc";
 export default class Group extends LightningElement {
   @api grp = {}
   @api parent = []
-  @api idx = 0;
+  @api index;
 
   // Return class for group
   get groupClass() {
@@ -31,9 +31,9 @@ export default class Group extends LightningElement {
   // Get conditions allowed for Group
   get conditions() {
     const conds = []
-    conds.push({ name: 'AND', value: 'AND', selected: false})
-    conds.push({ name: 'OR', value: 'OR', selected: false})
-    conds.push({ name: 'SUBTRACT', value: 'SUBTRACT', selected: false})
+    conds.push({ name: 'AND', value: 'INTERSECT', selected: false})
+    conds.push({ name: 'OR', value: 'UNION', selected: false})
+    conds.push({ name: 'SUBTRACT', value: 'MINUS', selected: false})
     
     // (Re)Set selected value for group
     conds.forEach(c => {
@@ -45,7 +45,8 @@ export default class Group extends LightningElement {
 
   // Does Group have a following sibling
   hasNextSibling() {
-    return this.grp.idx < this.parent.data.length -1
+    let idx = this.parent.data.findIndex(o => o.id === this.grp.id)
+    return idx !== -1 && idx < this.parent.data.length -1
   }
 
   // Handle Add Group Button click

@@ -4,6 +4,8 @@ export default class Rule extends LightningElement {
   @api rule = {}
   @api parent = []
   @track vals = []
+  @api index;
+
   selectElement = null
 
   // Get class for connection area
@@ -26,8 +28,8 @@ export default class Rule extends LightningElement {
     if (this.rule.trait) {
       // Parse trait value/valueId pairs
       const vals = this.rule.trait.VAL_OPTS.split('|')
-      ops.push({ name: '=', value: '=', selected: false})
-      ops.push({ name: '!=', value: '!=', selected: false})
+      ops.push({ name: '=', value: 'EQUALS', selected: false})
+      ops.push({ name: '!=', value: 'NOT', selected: false})
 
       // If more than one value is selectable - add IN/NOT IN Operators
       if (vals.length > 1) {
@@ -83,7 +85,32 @@ export default class Rule extends LightningElement {
 
   // True if Rule has following sibling
   hasNextSibling = () => {
-    return this.rule.idx < this.parent.data.length -1
+    let idx = this.parent.data.findIndex(o => o.id === this.rule.id)
+    return idx !== -1 && idx < this.parent.data.length -1
+  }
+
+  // Is a valid Drop Object
+  isValidDropObject = (event) => {
+    let dropItem = null
+    for (const item of event.dataTransfer.items) {
+       if (item.type === 'text/trait') dropItem = item;
+    }
+
+    return dropItem !== null
+  }
+  
+  // Handle Drag Start
+  onDragStart = (event) => {
+    event.dataTransfer.effectAllowed = 'move'
+
+    // Serialize selected trait and set as transfer data
+    event.dataTransfer.setData('text/rule', JSON.stringify(this.rule))
+    event.dataTransfer.setData(`index_${this.index}_${this.rule.parentId}`, this.index);
+  }
+
+  // Handle drag
+  onDrag = (event) => {
+    // Use move icon vs copy icon
   }
 
   // Handle Drag Over event
@@ -91,15 +118,22 @@ export default class Rule extends LightningElement {
     event.preventDefault()
 
     // Set move cusor effect
-    event.dataTransfer.dropEffect = 'move'
+    if (this.isValidDropObject(event))
+      event.dataTransfer.dropEffect = 'move'
+    else 
+      event.dataTransfer.dropEffect = 'none'
   }
 
   // Handle Drag Enter Event
   onDragEnter = (event)=> {
-    // Set move cusor effect
-    // Use greenish background color to highlight area can be dropped into
-    event.dataTransfer.dropEffect = 'move'
-    event.currentTarget.style.backgroundColor = '#ddfbdd'
+    if (this.isValidDropObject(event)) {
+      // Set move cusor effect
+      // Use greenish background color to highlight area can be dropped into
+      event.dataTransfer.dropEffect = 'move'
+      event.currentTarget.style.backgroundColor = '#ddfbdd'
+    } else {
+      event.dataTransfer.dropEffect = 'none'
+    }
   }
 
   // Handle Drag Leave Event
@@ -110,21 +144,26 @@ export default class Rule extends LightningElement {
 
   // Handle Drop Event
   onDrop = (event) => {
-    // Reconsitute dropped trait from event data
-    const trait = JSON.parse(event.dataTransfer.getData('text'))
-    event.currentTarget.style.backgroundColor = '#f0f3f5'
+    if (this.isValidDropObject(event)) {
+      event.currentTarget.style.backgroundColor = '#f0f3f5'
 
-    // Emit event w/ parent group/rule ID and trait
-    const e = new CustomEvent('addtraittorule', {
-        detail: {
-          groupId: this.rule.parentId,
-          id: this.rule.id,
-          trait: trait
-        },
-        bubbles: true,
-        composed: true
+      this.getTransferData(event).then((trait) => {
+        // Reconsitute dropped trait from event data
+        //const trait = JSON.parse(event.dataTransfer.getData('text'))
+        
+        // Emit event w/ parent group/rule ID and trait
+        const e = new CustomEvent('addtraittorule', {
+          detail: {
+            groupId: this.rule.parentId,
+            id: this.rule.id,
+            trait: trait
+          },
+          bubbles: true,
+          composed: true
+        })
+        this.dispatchEvent(e)
       })
-    this.dispatchEvent(e)
+    }
   }
   
   // Handle Delete Rule Event
@@ -170,5 +209,25 @@ export default class Rule extends LightningElement {
     })
     this.dispatchEvent(e)
 
+  }
+
+  
+  getTransferData = (event) => {
+    return new Promise((resolve, reject) => {
+      let traitData = null;
+      for (const item of event.dataTransfer.items) {
+        if (item.type === 'text/trait') {
+         traitData = item
+        }
+      }
+
+      if (traitData) {
+        traitData.getAsString(t => {
+          resolve(JSON.parse(t))
+        })
+      } else {
+        reject();
+      }
+    })
   }
 }

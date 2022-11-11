@@ -2,8 +2,8 @@
 	<div class="app">
 		<c-trait-drawer></c-trait-drawer>
 		<div class="content">
-				<div class='slds-grid slds-grid_vertical-align-end top-area'>
-					<div class='slds-col query-column'>
+			<div class='slds-grid slds-grid_vertical-align-end top-area'>
+				<div class='slds-col query-column'>
 					<div>
 						<label for="segmentName">Segment Name</label>
 						<input type='text' id='segmentName'></input>
@@ -19,9 +19,7 @@
 						<label>Query</label>
 					</lightning-layout>
 					<div class={queryBoxClass}>
-						<lightning-formatted-rich-text
-								value={readableQuery}
-						></lightning-formatted-rich-text>
+						<lightning-formatted-rich-text value={readableQuery}></lightning-formatted-rich-text>
 					</div>
 				</div>
 				<div class='slds-col slds-size_1-of-3 counts-column'>
@@ -29,13 +27,13 @@
 						<div class="slds-grid slds-wrap count-container">
 							<div class="slds-col slds-size_1-of-1">
 								<div class='counts-header'>
-									<svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="HomeIcon"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg>
+									<svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="HomeIcon">
+										<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+									</svg>
 									Households
 								</div>
 								<div class='counts-disabled-area' if:false={hasCounts}>
-									<lightning-formatted-rich-text
-											value={noCountsText}
-									></lightning-formatted-rich-text>
+									<lightning-formatted-rich-text value={noCountsText}></lightning-formatted-rich-text>
 								</div>
 								<div if:true={hasCounts}>
 									<template for:each={counts} for:item="count">
@@ -47,21 +45,22 @@
 								</div>
 							</div>
 							<div class='slds-col slds-size_1-of-1 slds-align-bottom count-button'>
-								<button onclick={getCounts} disabled={disableCounts}>Get Counts</button>
+								<button onclick={getCounts} disabled={isCountsDisabled}>Get Counts</button>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<c-group grp={query} onaddgroup={addRuleGroup} 
-				ondeletegroup={deleteRuleGroup}
-				onaddrule={addRule}
-				ondeleterule={deleteRule}
-				onaddtraittorule={addTraitToRule}
-				onruleoperatorchange={operatorChange}
-				onrulevaluechange={ruleValueChange}
-			>
+			<c-group grp={query} onaddgroup={addRuleGroup} ondeletegroup={deleteRuleGroup} onaddrule={addRule}
+				ondeleterule={deleteRule} onaddtraittorule={addTraitToRule} onruleoperatorchange={operatorChange}
+				onrulevaluechange={ruleValueChange} onmoverule={moveRule}>
 			</c-group>
+		</div>
+		<div class="slds-is-fixed footer">
+			<div class='slds-grid slds-grid_align-end nav-button-container'>
+				<button>Cancel</button>
+				<button disabled={isSaveDisabled}>Save</button>
+			</div>
 		</div>
 	</div>
 </template>

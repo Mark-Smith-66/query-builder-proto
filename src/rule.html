@@ -1,7 +1,7 @@
 <template>
   <div class='slds-grid' onvaluechange={onValueChange}>
     <div class={connectionClass}></div>
-    <div class='rule-wrapper' draggable="true" ondragstart={onDragStart}>
+    <div class='rule-wrapper' draggable="true" ondragend={onDragEnd} ondragstart={onDragStart}>
       <div if:true={emptyRule} class="rule empty" ondragover={onDragOver} ondragenter={onDragEnter}
         ondragleave={onDragLeave} ondrop={onDrop}>
         Drop Trait Here...

@@ -10,16 +10,23 @@ export default class DropSpot extends LightningElement {
   isDragOver = false;
 
   get isAllowedDrop() {
-    return this.position === 'before' ||
-      (this.position === 'after' && this.index === this.size - 1)
+    return true
+    //return this.position === 'before' ||
+    //  (this.position === 'after' && this.index == this.size - 1)
   }
 
   get spotClass() {
     return !this.isDragOver ? 'slds-grid drop-child-spot' : 'slds-grid drop-child-spot drag'
   }
+  get parentSpotClass() {
+    return !this.isDragOver ? 'slds-grid drop-parent-spot' : 'slds-grid drop-parent-spot drag'
+  }
 
   get connectionClass() {
-    return this.position === 'before' ? 'connection-area' : ''
+    if ((this.position === 'after' && this.dropIndex != this.size) || (this.position === 'before' && this.size > 0))
+     return 'connection-area';
+    
+    return '';
   }
 
   get dropIndex() {
@@ -30,11 +37,13 @@ export default class DropSpot extends LightningElement {
     const dataIndex = this.getDataIndex(event)
     if (!dataIndex) return false;
 
-    //console.log(`${dataIndex}:${this.index}`)
+    //console.log(`${dataIndex.groupId}:${this.gid} - ${dataIndex.index}:${this.dropIndex} ${dataIndex.index + 1}`)
+    //console.log(dataIndex.groupId == this.gid && dataIndex.index == this.dropIndex ? 'T' : 'F')
+    //console.log(dataIndex.groupId == this.gid && (dataIndex.index + 1) == this.dropIndex ? 'T' : 'F')
 
-    if ((dataIndex.groupId == this.gid && dataIndex.index == this.index) ||
-        (dataIndex.groupId == this.gid && dataIndex.index + 1 == this.index)) {
-        return false
+    if ((dataIndex.groupId == this.gid && dataIndex.index == this.dropIndex) ||
+        (dataIndex.groupId == this.gid && dataIndex.index + 1 == this.dropIndex)) {
+       return false
     }
     
     return true
@@ -61,9 +70,6 @@ export default class DropSpot extends LightningElement {
       // Set move cusor effect
       // Use greenish background color to highlight area can be dropped into
       event.dataTransfer.dropEffect = 'move'
-      event.currentTarget.style.backgroundColor = '#ddfbdd'
-      event.currentTarget.style.border = '1px dotted #000'
-      event.currentTarget.style.borderRadius = '2px'
     } else {
      // console.log('not allowed')
       event.dataTransfer.dropEffect = 'none'
@@ -73,29 +79,21 @@ export default class DropSpot extends LightningElement {
   // Handle Drag Leave Event
   onDragLeave = (event) => {
     this.isDragOver = false
-
-    // Revert to original background color
-    event.currentTarget.style.backgroundColor = 'transparent'
-    event.currentTarget.style.border = 'none'
-    event.currentTarget.style.borderRadius = 'none'
   }
 
   // Handle Drop Event
   onDrop = (event) => {
     this.isDragOver = false
-    event.currentTarget.style.backgroundColor = 'transparent'
-    event.currentTarget.style.border = 'none'
-    event.currentTarget.style.borderRadius = 'none'
 
     if (this.isValidDropTarget(event)) {
       this.getTransferData(event).then((r) => {
-        console.log(`move ${r.id}:${r.parentId} to ${this.index} in ${this.gid}`)
+        console.log(`move ${r.id}:${r.parentId} to ${this.dropIndex} in ${this.gid}`)
         const e = new CustomEvent('moverule', {
           detail: {
             groupId: r.parentId,
             id: r.id,
             moveGroupId: this.gid,
-            moveIndex: this.position === 'after' ? this.index + 1 : this.index
+            moveIndex: this.dropIndex
           },
           bubbles: true,
           composed: true
@@ -110,8 +108,9 @@ export default class DropSpot extends LightningElement {
       if (item.type.startsWith('index')) {
         const idx = item.type.split('_')
         return {
-          index: idx[1],
-          groupId: idx[2]
+          index: parseInt(idx[1]),
+          groupId: idx[2],
+          id: idx[3]
         }
       }
     }

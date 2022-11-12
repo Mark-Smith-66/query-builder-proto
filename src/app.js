@@ -133,7 +133,8 @@ export default class App extends LightningElement {
     if (group) {
       let fromIndex = group.data.findIndex(e => e.id === id)
       if (fromIndex !== -1) {
-       if (toIndex > 1) toIndex = toIndex - 1;
+        
+        if (toIndex > fromIndex && gid == toGroup) toIndex = toIndex - 1;
         console.log(`move ${id} from ${fromIndex} in ${gid} to ${toIndex} in ${toGroup}`)
         const element = group.data.splice(fromIndex, 1)[0]; 
         
@@ -355,7 +356,14 @@ export default class App extends LightningElement {
   
   // TODO: Proper name/value mapping as needed by Data API
   mapOperator = (o) => {
-    return o;
+    let op = o;
+    if (o === 'INTERSECT') op = 'AND';
+    else if (o === 'UNION') op = 'OR';
+    else if (o === 'MINUS') op = 'SUBTRACT';
+    else if (o === 'EQUALS') op = '=';
+    else if (o === 'NOT') op = '!=';
+    
+    return op;
   }
 
   // Get Query JSON 
@@ -363,7 +371,7 @@ export default class App extends LightningElement {
     let jq = {}
     if (qs.isGroup) {
       jq = {
-        operator: this.mapOperator(qs.operator),
+        operator: qs.operator,
         value: []
       }
       qs.data.forEach(r => {
@@ -423,7 +431,7 @@ export default class App extends LightningElement {
         // Separate any children with Group Operator
         // Note: Operator omitted if only one child exists
         if (idx < qs.data.length - 1) {
-          s += ` <b style="color:${this.colors.operator}">${qs.operator}</b> `
+          s += ` <b style="color:${this.colors.operator}">${this.mapOperator(qs.operator)}</b> `
         }
         s += '</div>'
       })
@@ -449,8 +457,8 @@ export default class App extends LightningElement {
         s += qs.trait.ALIAS + ' '
 
         // Output Operator or missing operator text if not present
-        s += qs.operator
-          ? ` <span style="">${qs.operator}</span> `
+        s += this.mapOperator(qs.operator)
+          ? ` <span style="">${this.mapOperator(qs.operator)}</span> `
           : ` <span style="color:${this.colors.err}">&lt;missing operator&gt;</span> `
         
         // IN/NOT IN operators have values surrounded by parens

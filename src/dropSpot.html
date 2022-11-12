@@ -1,5 +1,5 @@
 <template>
-  <div class='slds-grid' onvaluechange={onValueChange} if:true={isAllowedDrop}>
+  <div class={parentSpotClass} onvaluechange={onValueChange}>
     <div class='{connectionClass}'></div>
     <div class={spotClass} ondragover={onDragOver} ondragenter={onDragEnter} ondragleave={onDragLeave} ondrop={onDrop}>
     </div>

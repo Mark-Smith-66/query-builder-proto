@@ -4,7 +4,7 @@ import { LightningElement, api, track } from "lwc";
 export default class Group extends LightningElement {
   @api grp = {}
   @api parent = []
-  @api index;
+  @api index = 0;
 
   // Return class for group
   get groupClass() {
@@ -97,5 +97,18 @@ export default class Group extends LightningElement {
         composed: true
       })
     this.dispatchEvent(e)
+  }
+  
+  // Handle Drag Start
+  onDragStart = (event) => {
+    let dragId = event.target.getAttribute('data-id')
+    console.log(`${this.allowDelete} - ${dragId} : ${this.grp.id}`)
+    if (this.allowDelete && dragId === this.grp.id) {
+      event.dataTransfer.effectAllowed = 'move'
+      console.log(`move ${this.grp.id} at ${this.index}`)
+      // Serialize selected trait and set as transfer data
+      event.dataTransfer.setData('text/rule', JSON.stringify(this.grp))
+      event.dataTransfer.setData(`index_${this.index}_${this.grp.parentId}_${this.grp.id}`, this.index);
+    }
   }
 }

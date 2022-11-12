@@ -1,12 +1,13 @@
 <template>
-  <div class="slds-grid slds-wrap slds-is-fixed slds-grid_vertical-align-start slds-grid_align-center trait-filter-column">
-    <div class='slds-col slds-size_1-of-1 drawer-title'> 
+  <div
+    class="slds-grid slds-wrap slds-is-fixed slds-grid_vertical-align-start slds-grid_align-center trait-filter-column">
+    <div class='slds-col slds-size_1-of-1 drawer-title'>
       Traits by Category
     </div>
     <div class='slds-col slds-size_1-of-1'>
       <div class="filter-section-row">
-          <label for="categories">Filter...</label>
-          <input type='text' id='filter' onkeyup={onFilterChange}></input>
+        <label for="categories">Filter...</label>
+        <input type='text' id='filter' onkeyup={onFilterChange}></input>
       </div>
       <div class="filter-section-row">
         <label for="categories">Category</label>
@@ -27,24 +28,21 @@
         </select>
       </div>
       <div class="directions-section-row">
-          {directions}
+        {directions}
       </div>
     </div>
     <div class='slds-col slds-size_1-of-1 filtered-trait-area'>
-        <template for:each={traits} for:item='t'>
-          <div id='{t.TRAIT_ID}' key={t.TRAIT_ID} class="selectable-trait" 
-            draggable=true            
-            ondragstart={onDragStart}
-            trait={t}
-          >
-              <div class='trait-name'>{t.ALIAS}</div>
-              <div class='taxonomy-area'>
-                  <span class='cat-name'>{t.CATEGORY}</span>
-                  &gt;
-                  <span class="subcat-name">{t.SUB_CATEGORY}</span>
-              </div>
+      <template for:each={traits} for:item='t'>
+        <div id='{t.TRAIT_ID}' key={t.TRAIT_ID} class="selectable-trait" draggable=true ondragstart={onDragStart}
+          trait={t}>
+          <div class='trait-name'>{t.ALIAS}</div>
+          <div class='taxonomy-area'>
+            <span class='cat-name'>{t.CATEGORY}</span>
+            &gt;
+            <span class="subcat-name">{t.SUB_CATEGORY}</span>
           </div>
-        </template>
+        </div>
+      </template>
     </div>
   </div>
 </template>

@@ -1,15 +1,12 @@
 import { LightningElement, track } from "lwc";
+import traitmeta from './traitdata'
 
 export default class App extends LightningElement {
-  @track _query = {
-    id: 'root', 
-    isGroup: true,
-    operator: 'INTERSECT',
-    data: [],
-  }
-  @track countsQuery;
-  @track savedQuery;
+  @track savedQuery //= {"operator":"INTERSECT","value":[{"operator":"EQUALS","trait":"DTV_HH_DEMO_HH_AGE_1824","trait_id":1197,"values":[{"value":"YES","value_id":"145581"}]},{"operator":"IN","trait":"DTV_HH_DEMO_ETHNICITY","trait_id":1719,"values":[{"value":"AFRICAN AMERICAN","value_id":"74323"},{"value":"ASIAN","value_id":"157506"}]},{"operator":"INTERSECT","value":[{"operator":"EQUALS","trait":"DTV_HH_DEMO_AARP_MODEL","trait_id":1087,"values":[{"value":"SOMEWHAT LIKELY","value_id":"127419"}]},{"operator":"NOT IN","trait":"TV_VIEWERSHIP_CONSUMPTION_BIG_5","trait_id":1843,"values":[{"value":"1-5","value_id":"521829340"},{"value":"16-20","value_id":"81980"}]}]}]}
+  @track countsQuery
   @track counts;
+  @track _query
+  
 
   colors = {
     err: '#ff1744',
@@ -17,12 +14,66 @@ export default class App extends LightningElement {
     operator: '#7a267b'
   }
 
+  constructor() {
+    super()
+    this._query  = this.reconstitute()
+  }
   // Getter/Setter for internal Query JSON
   get query() {
     return this._query
   }
   set query(query) {
     this._query = query
+  }
+
+  get traitmetadata() {
+    return traitmeta;
+  }
+
+  // Reconsititue saved query
+  reconstitute = (g) => {
+    let obj
+    if (!g) {
+      obj = {
+        id: 'root', 
+        isGroup: true,
+        operator: 'INTERSECT',
+        data: [],
+      }
+      if (this.savedQuery) {
+        obj.op = this.savedQuery.operator
+        this.savedQuery.value.forEach(v => {
+          obj.data.push(this.reconstitute(v))
+        })
+      }
+    } else {
+      if (g.value) {
+        obj = {
+          id: this.getuuid(),
+          parentId: g.id,
+          isGroup: true,
+          operator: g.operator,
+          data: []
+        }
+        
+        g.value.forEach(v => {
+          obj.data.push(this.reconstitute(v))
+        })
+    } else {
+      obj = {
+        id: this.getuuid(),
+        parentId: g.id,
+        isGroup: false,
+        operator: g.operator,
+        value: g.values.map(v => `${v.value}^${v.value_id}`),
+        trait: traitmeta.find(t => t.TRAIT_ID === g.trait_id)
+      }
+      console.log(g.trait)
+      console.log(obj.value)
+    }
+  }
+    
+    return obj
   }
 
   // Generate unique id
@@ -113,7 +164,7 @@ export default class App extends LightningElement {
         id: rid,
         isGroup: false,
         operator: null,
-        values: null,
+        value: null,
         trait: null
       })
 
@@ -339,6 +390,7 @@ export default class App extends LightningElement {
     const apiQuery = JSON.stringify(this.getQueryJSON())
     this.countsQuery = JSON.stringify(this._query)
     console.log(apiQuery)
+    console.log(this.countsQuery)
     alert(apiQuery)
     this.counts =  [
        { name: 'DTV_ADDRESSABLE', cnt:  parseInt(`${Math.random() * 100000}`, 10).toLocaleString()},

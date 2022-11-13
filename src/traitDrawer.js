@@ -1,10 +1,9 @@
-
-import traitmeta from './traitdata'
 import { LightningElement, api, track } from "lwc";
 export default class Rule extends LightningElement {
    categories = []
    allTraits = []
    dragTrait = null
+   _traitmeta
 
    @track selectedCat;
    @track subCategories = new Set();
@@ -12,17 +11,16 @@ export default class Rule extends LightningElement {
    @track traits = [];
    @track filterTerm = null;
    
-   constructor() {
-     super()
+   connectedCallback() {
 
-     traitmeta.forEach(t => {
+     this._traitmeta.forEach(t => {
        
        // Translate/map any trait meta data
        this.massageTraitData(t)
      })
      
      // Sort traits by Category, then Sub-Category, then ALIAS
-     traitmeta.sort((a, b) => {
+     this._traitmeta.sort((a, b) => {
 
         const catCompare = a.CATEGORY.toUpperCase().localeCompare(b.CATEGORY.toUpperCase())
         if (catCompare !== 0) return catCompare
@@ -34,12 +32,12 @@ export default class Rule extends LightningElement {
       })
       
       // Get Distinct categories
-      traitmeta.forEach(t => {
+      this._traitmeta.forEach(t => {
         const cname = t.CATEGORY
 
         if (this.categories.findIndex(c => c.cat === cname) === -1) this.categories.push({ cat: cname })
       })
-      this.allTraits = traitmeta
+      this.allTraits = this._traitmeta
   }
 
   // Massage Category/Sub-Category names
@@ -94,6 +92,14 @@ export default class Rule extends LightningElement {
     })
 
     t.VAL_OPTS = vals.join('|')
+  }
+
+  // Getter/Setter Local data
+  @api get traitmeta() {
+    return this._traitmeta;
+  }
+  set traitmeta(t) {
+    this._traitmeta = JSON.parse(JSON.stringify(t))
   }
 
   // Distinct Categories

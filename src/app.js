@@ -2,10 +2,10 @@ import { LightningElement, track } from "lwc";
 import traitmeta from './traitdata'
 
 export default class App extends LightningElement {
-  @track savedQuery //= {"operator":"INTERSECT","value":[{"operator":"EQUALS","trait":"DTV_HH_DEMO_HH_AGE_1824","trait_id":1197,"values":[{"value":"YES","value_id":"145581"}]},{"operator":"IN","trait":"DTV_HH_DEMO_ETHNICITY","trait_id":1719,"values":[{"value":"AFRICAN AMERICAN","value_id":"74323"},{"value":"ASIAN","value_id":"157506"}]},{"operator":"INTERSECT","value":[{"operator":"EQUALS","trait":"DTV_HH_DEMO_AARP_MODEL","trait_id":1087,"values":[{"value":"SOMEWHAT LIKELY","value_id":"127419"}]},{"operator":"NOT IN","trait":"TV_VIEWERSHIP_CONSUMPTION_BIG_5","trait_id":1843,"values":[{"value":"1-5","value_id":"521829340"},{"value":"16-20","value_id":"81980"}]}]}]}
+  @track savedQuery// = {"operator":"INTERSECT","value":[{"operator":"EQUALS","trait":"DTV_HH_DEMO_HH_AGE_1824","trait_id":1197,"values":[{"value":"YES","value_id":"145581"}]},{"operator":"IN","trait":"DTV_HH_DEMO_ETHNICITY","trait_id":1719,"values":[{"value":"AFRICAN AMERICAN","value_id":"74323"},{"value":"ASIAN","value_id":"157506"},{"value":"HISPANIC","value_id":"92067"},{"value":"WHITE","value_id":"145378"}]},{"operator":"INTERSECT","value":[{"operator":"EQUALS","trait":"DTV_HH_DEMO_AARP_MODEL","trait_id":1087,"values":[{"value":"SOMEWHAT LIKELY","value_id":"127419"}]},{"operator":"NOT IN","trait":"TV_VIEWERSHIP_CONSUMPTION_BIG_5","trait_id":1843,"values":[{"value":"1-5","value_id":"521829340"},{"value":"16-20","value_id":"81980"}]}]}]}
   @track countsQuery
   @track counts;
-  @track _query
+  @track _query = {}
   
 
   colors = {
@@ -31,7 +31,7 @@ export default class App extends LightningElement {
   }
 
   // Reconsititue saved query
-  reconstitute = (g) => {
+  reconstitute = (g, pid) => {
     let obj
     if (!g) {
       obj = {
@@ -43,33 +43,31 @@ export default class App extends LightningElement {
       if (this.savedQuery) {
         obj.op = this.savedQuery.operator
         this.savedQuery.value.forEach(v => {
-          obj.data.push(this.reconstitute(v))
+          obj.data.push(this.reconstitute(v, obj.id))
         })
       }
     } else {
       if (g.value) {
         obj = {
           id: this.getuuid(),
-          parentId: g.id,
+          parentId: pid,
           isGroup: true,
           operator: g.operator,
           data: []
         }
         
         g.value.forEach(v => {
-          obj.data.push(this.reconstitute(v))
+          obj.data.push(this.reconstitute(v, obj.id))
         })
     } else {
       obj = {
         id: this.getuuid(),
-        parentId: g.id,
+        parentId: pid,
         isGroup: false,
         operator: g.operator,
         value: g.values.map(v => `${v.value}^${v.value_id}`),
         trait: traitmeta.find(t => t.TRAIT_ID === g.trait_id)
       }
-      console.log(g.trait)
-      console.log(obj.value)
     }
   }
     

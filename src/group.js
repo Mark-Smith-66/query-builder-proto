@@ -5,6 +5,7 @@ export default class Group extends LightningElement {
   @api grp = {}
   @api parent = []
   @api index = 0;
+  @api isreadonly = false;
 
   // Return class for group
   get groupClass() {
@@ -14,7 +15,12 @@ export default class Group extends LightningElement {
 
   // Determine if Delete allowed for group
   get allowDelete() {
-    return this.grp.id !== 'root'
+    return this.grp.id !== 'root' && !this.isreadonly
+  }
+
+  // Is Draggable
+  get isDraggable() {
+    return this.grp.id !== 'root' && !this.isreadonly
   }
 
   // Get class for connection area

@@ -5,9 +5,14 @@ export default class Rule extends LightningElement {
   @api parent = []
   @track vals = []
   @api index;
-  @track moving = false;
+  @api isreadonly = false;
 
   selectElement = null
+
+  // Is Draggable
+  get isDraggable() {
+    return !this.isreadonly
+  }
 
   // Get class for connection area
   get connectionClass() {
@@ -74,6 +79,19 @@ export default class Rule extends LightningElement {
       this.rule.operator.indexOf('IN') !== -1
   }
 
+  // Selected Rule Values
+  get selectedRuleValues() {
+    let vals = ''
+    if (this.rule.value) {
+      vals = this.rule.value.map(v => {
+        const rvPair = v.split('^')
+        return rvPair[0]
+      }).join(', ')
+    }
+
+    return vals
+  }
+
   // Check if value/id exists in selected values for Rule
   isSelected = (v) => {
     if (this.rule.value) {
@@ -102,15 +120,11 @@ export default class Rule extends LightningElement {
   
   // Handle Drag Start/End
   onDragStart = (event) => {
-    this.moving = true
     event.dataTransfer.effectAllowed = 'move'
 
     // Serialize selected trait and set as transfer data
     event.dataTransfer.setData('text/rule', JSON.stringify(this.rule))
     event.dataTransfer.setData(`index_${this.index}_${this.rule.parentId}_${this.rule.id}`, this.index);
-  }
-  onDragEnd = (event) => {
-    this.moving = false;
   }
 
 

@@ -1,8 +1,8 @@
 <template>
   <div class='slds-grid'>
     <div class={connectionClass}></div>
-    <div class={groupClass} data-id={grp.id} draggable={allowDelete} ondragstart={onDragStart}>
-      <div class='slds-grid slds-grid_vertical-align-end slds-grid_align-spread'>
+    <div class={groupClass} data-id={grp.id} draggable={isDraggable} ondragstart={onDragStart}>
+      <div if:false={isreadonly} class='slds-grid slds-grid_vertical-align-end slds-grid_align-spread'>
         <div class='slds-col'>
           <select onchange={onConditionChange}>
             <option value=''></option>
@@ -16,13 +16,16 @@
           <button onclick={addRule}>Add Rule</button>
         </div>
       </div>
+      <div if:true={isreadonly}>
+        <span class='readonly-group-start-node'></span>
+      </div>
       <c-drop-spot gid={grp.id} index=0 size={grp.data.length} position='before'></c-drop-spot>
 
       <template for:each={grp.data} for:item='c' for:index='idx'>
         <div class="child-container" key={c.id}>
-          <c-group if:true={c.isGroup} grp={c} parent={grp} index={idx}>
+          <c-group isreadonly={isreadonly} if:true={c.isGroup} grp={c} parent={grp} index={idx}>
           </c-group>
-          <c-rule if:false={c.isGroup} rule={c} parent={grp} index={idx}>
+          <c-rule isreadonly={isreadonly} if:false={c.isGroup} rule={c} parent={grp} index={idx}>
           </c-rule>
           <c-drop-spot gid={c.parentId} index={idx} size={grp.data.length} position='after'>
           </c-drop-spot>

@@ -64,9 +64,11 @@
     height: 120px;
     overflow: auto;
     background-color: var(--primary-light-color);
-    white-space: pre;
+    /*white-space: pre;*/
     font-size: 10px;
     padding: 6px;
+    word-break: normal;
+    overflow-wrap: anywhere;
 }
 .query-box.invalid {
     border-color: var(--error-color);

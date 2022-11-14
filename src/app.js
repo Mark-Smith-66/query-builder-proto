@@ -504,7 +504,7 @@ export default class App extends LightningElement {
         // <alias> <operator> <values>
         
         // Output trait alias
-        s += qs.trait.ALIAS + ' '
+        s += `<span style='font-weight:600'>${qs.trait.ALIAS}</span>`
 
         // Output Operator or missing operator text if not present
         s += this.mapOperator(qs.operator)
@@ -520,11 +520,10 @@ export default class App extends LightningElement {
 
           // Comma separate each selected value
           // Note: comma omitted if only a single value is selected
-          qs.value.forEach((v, i) => {
+          s+= '<span style="font-weight:600">' + qs.value.map((v, i) => {
             const rv = v.split('^')
-            s += i > 0 ? ', ' : ''
-            s += rv[0]
-          })
+            return rv[0]
+          }).join(', ') + '</span>'
         } else {
           // No values present - output missing values text
           s += ` <span style="color:${this.colors.err}">&lt;missing value&gt;</span> `

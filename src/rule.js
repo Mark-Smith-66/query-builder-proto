@@ -22,6 +22,11 @@ export default class Rule extends LightningElement {
     return r
   }
 
+  // get rule wrapper class
+  get ruleWrapperClass() {
+    return `rule-wrapper ${this.isDraggable ? 'draggable' : ''}`
+  }
+
   // Return if rule has no trait dropped in yet
   get emptyRule() {
     return this.rule.trait === null

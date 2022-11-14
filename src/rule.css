@@ -18,6 +18,9 @@
   overflow-wrap: anywhere;
   font-size: 12px;
 }
+.rule-wrapper.draggable .rule {
+  cursor: move
+}
 .rule.empty {
   border: 2px dotted #000;
   color: #aaa;

@@ -26,6 +26,10 @@
     display: block;
     position: relative;
 }
+.rule-group.draggable {
+  cursor: move;
+}
+
 .group-odd {
   background-color: #fffbf2;
   border: 2px solid #b39848;

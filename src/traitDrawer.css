@@ -51,6 +51,7 @@
   overflow-wrap: anywhere;
   margin-bottom: 8px;
   background-color: #fff;
+  cursor: grab;
 }
 .taxonomy-area {
   margin-top: 4px;

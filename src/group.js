@@ -10,7 +10,8 @@ export default class Group extends LightningElement {
   // Return class for group
   get groupClass() {
    if (this.grp.id === 'root') return 'rule-group'
-   return this.grp.odd ? 'rule-group group-odd' : 'rule-group group-even'
+   const groupType = this.grp.odd ? 'group-odd' : 'group-even'
+   return `rule-group ${groupType} ${this.isDraggable ? 'draggable' : ''}`
   }
 
   // Determine if Delete allowed for group

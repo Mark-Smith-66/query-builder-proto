@@ -11,7 +11,7 @@ export default class Group extends LightningElement {
   get groupClass() {
    if (this.grp.id === 'root') return 'rule-group'
    const groupType = this.grp.odd ? 'group-odd' : 'group-even'
-   return `rule-group ${groupType} ${this.isDraggable ? 'draggable' : ''}`
+   return `rule-group ${groupType}`
   }
 
   // Determine if Delete allowed for group
@@ -48,6 +48,11 @@ export default class Group extends LightningElement {
     })
 
     return conds
+  }
+
+  // Get selected condition
+  get selectedCondition() {
+    return this.conditions.find(c => c.value === this.grp.operator).name
   }
 
   // Does Group have a following sibling

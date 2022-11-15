@@ -2,22 +2,20 @@
   <div class='slds-grid'>
     <div class={connectionClass}></div>
     <div class={groupClass} data-id={grp.id} draggable={isDraggable} ondragstart={onDragStart}>
-      <div if:false={isreadonly} class='slds-grid slds-grid_vertical-align-end slds-grid_align-spread'>
+      <div class='slds-grid slds-grid_vertical-align-end slds-grid_align-spread'>
         <div class='slds-col'>
-          <select onchange={onConditionChange}>
+          <select if:false={isreadonly} onchange={onConditionChange}>
             <option value=''></option>
             <template for:each={conditions} for:item='c'>
               <option key={c.name} value={c.value} selected={c.selected}>{c.name}</option>
             </template>
           </select>
+          <div class='readonly-group-start-node' if:true={isreadonly}>{selectedCondition}</div>
         </div>
-        <div class='slds-col button-container'>
+        <div if:false={isreadonly} class='slds-col button-container'>
           <button onclick={addGroup}>Add Rule Group</button>
           <button onclick={addRule}>Add Rule</button>
         </div>
-      </div>
-      <div if:true={isreadonly}>
-        <span class='readonly-group-start-node'></span>
       </div>
       <c-drop-spot gid={grp.id} index=0 size={grp.data.length} position='before'></c-drop-spot>
 

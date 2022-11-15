@@ -1,17 +1,8 @@
 @import './main.css';
 
 .readonly-group-start-node {
-  width: 16px;
-  height: 16px;
   border: 2px solid #000;
-  border-radius: 50%;
-  display: inline-block;
-  position: absolute;
-  top: 0;
-  left: 1px;
-  background-color: #fff;
-  z-index: 1;
-  margin-top: 3px;
+  padding: 0px 4px;
 }
 
 /* Rule Group */

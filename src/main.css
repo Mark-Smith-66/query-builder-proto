@@ -1,33 +1,23 @@
 
+/* Base colors */
 :host {
     --error-color: #ff1744;
     --primary-color: #21528c;
     --secondary-color: #7a267b;
     --primary-light-color: #f0f3f5;
 }
-/*
-.rule-style {
-    color: var(--primary-color);
-}
-.rule-style.error {
-    color: var(--error-color);
-    font-weight: bold;
-}
-.rule-style.operator {
-    color: var(--secondary-color);
-}
-*/
 
- button:disabled {
+/* Base button disable style */
+button:disabled {
     opacity: .3;
 }
 
-
+/* Shared connection area style */
 .connection-area {
   width: 12px;
   display: inline-block;
 }
- .connection-area::before {
+.connection-area::before {
     content: "";
     position: relative;
     left: 0px;

@@ -1,0 +1,18 @@
+<template>
+  <div if:true={emptyGroup} class='empty-group'>
+    {emptyGroupText}
+  </div>
+  <div if:false={emptyGroup} class={groupClass}>
+    <span if:false={isRoot}>(</span>
+    <template for:each={group.data} for:item='c' for:index='idx'>
+      <div class="child-container" key={c.id}>
+        <c-readable-group if:true={c.isGroup} group={c} parent={group}>
+        </c-readable-group>
+        <c-readable-rule if:false={c.isGroup} rule={c} parent={group}>
+        </c-readable-rule>
+      </div>
+    </template>
+    <span if:false={isRoot}>)</span>
+  </div>
+  <span class='group-operator'>{operator}</span>
+</template>

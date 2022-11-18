@@ -6,8 +6,17 @@ export default class Rule extends LightningElement {
   @track vals = []
   @api index;
   @api isreadonly = false;
+  @api scrollel
 
   selectElement = null
+
+  // Rendered Callback hook
+  renderedCallback() {
+    const s = this.template.querySelector(`[data-id="${this.scrollel}"]`)
+    if (s) {
+      s.scrollIntoView()
+    } 
+  }
 
   // Is Draggable
   get isDraggable() {
@@ -55,6 +64,11 @@ export default class Rule extends LightningElement {
     }
 
     return ops
+  }
+
+  // Get the mapped selected operator value
+  get selectedOperator() {
+    return this.operators.find(o => o.value === this.rule.operator).name
   }
 
   // Get all allowed values for rule

@@ -21,9 +21,9 @@
 
       <template for:each={grp.data} for:item='c' for:index='idx'>
         <div class="child-container" key={c.id}>
-          <c-group isreadonly={isreadonly} if:true={c.isGroup} grp={c} parent={grp} index={idx}>
+          <c-group scrollel={scrollel} isreadonly={isreadonly} if:true={c.isGroup} grp={c} parent={grp} index={idx}>
           </c-group>
-          <c-rule isreadonly={isreadonly} if:false={c.isGroup} rule={c} parent={grp} index={idx}>
+          <c-rule scrollel={scrollel} isreadonly={isreadonly} if:false={c.isGroup} rule={c} parent={grp} index={idx}>
           </c-rule>
           <c-drop-spot gid={c.parentId} index={idx} size={grp.data.length} position='after'>
           </c-drop-spot>

@@ -1,17 +1,25 @@
 import { LightningElement, api, track } from "lwc";
 
-
 export default class Group extends LightningElement {
   @api grp = {}
   @api parent = []
   @api index = 0;
   @api isreadonly = false;
+  @api scrollel;
+
+  // Rendered Callback hook
+  renderedCallback() {
+    const s = this.template.querySelector(`[data-id="${this.scrollel}"]`)
+    if (s) {
+      s.scrollIntoView()
+    } 
+  }
 
   // Return class for group
   get groupClass() {
    if (this.grp.id === 'root') return 'rule-group'
-   const groupType = this.grp.odd ? 'group-odd' : 'group-even'
-   return `rule-group ${groupType}`
+   const groupType = this.grp.level % 2 ? 'group-odd' : 'group-even'
+   return `rule-group ${groupType} ${this.isDraggable ? 'draggable' : ''}`
   }
 
   // Determine if Delete allowed for group
@@ -114,12 +122,9 @@ export default class Group extends LightningElement {
   // Handle Drag Start
   onDragStart = (event) => {
     let dragId = event.target.getAttribute('data-id')
-    console.log(`${this.allowDelete} - ${dragId} : ${this.grp.id}`)
+    
     if (this.allowDelete && dragId === this.grp.id) {
       event.dataTransfer.effectAllowed = 'move'
-      console.log(`move ${this.grp.id} at ${this.index}`)
-      // Serialize selected trait and set as transfer data
-      event.dataTransfer.setData('text/rule', JSON.stringify(this.grp))
       event.dataTransfer.setData(`index_${this.index}_${this.grp.parentId}_${this.grp.id}`, this.index);
     }
   }

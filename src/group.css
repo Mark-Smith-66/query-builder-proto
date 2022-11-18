@@ -1,8 +1,11 @@
 @import './main.css';
 
+/* Base styling for read-only group */
 .readonly-group-start-node {
   border: 2px solid #000;
   padding: 0px 4px;
+  color: var(--secondary-color);
+  font-weight: 600;
 }
 
 /* Rule Group */
@@ -17,10 +20,11 @@
     display: block;
     position: relative;
 }
+
+/* Special group class styling  */
 .rule-group.draggable {
   cursor: move;
 }
-
 .group-odd {
   background-color: #fffbf2;
   border: 2px solid #b39848;

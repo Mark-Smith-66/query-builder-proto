@@ -17,28 +17,11 @@
     overflow: auto;
 }
 
-.footer {
-    bottom: 0;
-    left: 280px;
-    width: calc(100% - 280px);
-    padding: 8px;
-    background-color: #fff;
-    z-index: 1;
-    border-top: 1px solid #aaa;
-}
-.nav-button-container {
-    width: 100%;
-}
-.nav-button-container button {
-    margin-right: 8px;
-}
-
 /* Container for query/count display */
 .top-area {
     height: 250px;
     margin: 8px;
     padding-bottom: 12px;
-    border-bottom: 1px solid #ccc;
 }
 
 /* Force label/inputs full-width */
@@ -131,4 +114,21 @@
 .count-button {
     width: 100%;
     text-align: center;
+}
+
+/* Footer and buttons */
+.footer {
+    bottom: 0;
+    left: 280px;
+    width: calc(100% - 280px);
+    padding: 8px;
+    background-color: #fff;
+    z-index: 1;
+    border-top: 1px solid #ccc;
+}
+.nav-button-container {
+    width: 100%;
+}
+.nav-button-container button {
+    margin-right: 8px;
 }

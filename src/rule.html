@@ -1,7 +1,7 @@
 <template>
   <div class='slds-grid' onvaluechange={onValueChange}>
     <div class={connectionClass}></div>
-    <div class={ruleWrapperClass} draggable={isDraggable} ondragstart={onDragStart}>
+    <div data-id={rule.id} class={ruleWrapperClass} draggable={isDraggable} ondragstart={onDragStart}>
       <div if:true={emptyRule} class="rule empty" ondragover={onDragOver} ondragenter={onDragEnter}
         ondragleave={onDragLeave} ondrop={onDrop}>
         Drop Trait Here...
@@ -10,13 +10,13 @@
         <div class='slds-grid'>
           <div class='slds-col slds-size_7-of-12'>
             <div>
-              <b>Category:</b> {rule.trait.CATEGORY}
+              <span class='trait-label'>Category:</span><span class='trait-category'>{rule.trait.CATEGORY}</span>
             </div>
             <div>
-              <b>Sub Category:</b> {rule.trait.SUB_CATEGORY}
+              <span class='trait-label'>Sub Category:</span><span class='trait-sub-category'>{rule.trait.SUB_CATEGORY}</span>
             </div>
             <div>
-              <b>Trait:</b> {rule.trait.ALIAS}
+              <span class='trait-label'>Trait:</span><span class='trait-alias'>{rule.trait.ALIAS}</span>
             </div>
           </div>
           <div class='slds-col slds-size_2-of-12 operator-column'>
@@ -27,7 +27,7 @@
                 <option key={o.name} value={o.value} selected={o.selected}>{o.name}</option>
               </template>
             </select>
-            <div if:true={isreadonly}>{rule.operator}</div>
+            <div if:true={isreadonly}>{selectedOperator}</div>
           </div>
           <div class='slds-col slds-size_3-of-12 value-column'>
             <label for="value">Value(s)</label>

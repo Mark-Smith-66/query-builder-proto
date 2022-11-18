@@ -1,0 +1,13 @@
+<template>
+  <div>
+    <span if:true={emptyRule} class='missing-trait'>
+      &lt;missing trait&gt;
+    </span>
+    <span if:false={emptyRule} class={ruleClass}>
+      <span>{rule.trait.ALIAS}</span>
+    <span class={operatorClass}>{operator}</span>
+    <span class={valueClass}>{values}</span>
+    </span>
+    <span class='group-operator'>{groupOperator}</span>
+  </div>
+</template>

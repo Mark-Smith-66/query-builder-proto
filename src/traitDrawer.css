@@ -7,7 +7,7 @@
     background-color: var(--primary-light-color);
     z-index: 1;
     padding: 8px 4px 4px 4px;
-    border-right: 1px solid #666;
+    border-right: 1px solid #ccc;
 }
 
 /* Title */
@@ -61,10 +61,10 @@
   font-weight: 700;
 }
 .cat-name {
-  color: #7a267b;
+  color: var(--secondary-color);
   font-weight: 600;
 }
 .subcat-name {
-  color: #21528c;
+  color: var(--primary-color);
   font-weight: 600;
 }

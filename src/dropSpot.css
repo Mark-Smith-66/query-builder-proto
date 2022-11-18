@@ -1,14 +1,19 @@
+/* Base drop spot style */
 .drop-child-spot {
   height: 10px;
   margin-top: 2px;
   width: 100%;
 }
+
+/* Drag Over spot styling */
 .drop-child-spot.drag {
   height: 70px;
   background-color: #ddfbdd;
   border: 1px dashed #000;
   border-radius: 2px;
 }
+
+/* Connection Area for drop spot */
 .connection-area {
   width: 12px;
   display: inline-block;

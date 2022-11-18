@@ -1,0 +1,23 @@
+.missing-trait {
+  color: var(--error-color);
+}
+.rule {
+    color: var(--primary-color);
+    padding-left: 6px;
+}
+.rule.root {
+  padding-left: 0px;
+}
+.rule .error {
+    color: var(--error-color);
+    font-weight: bold;
+}
+.rule .operator {
+    color: var(--secondary-color);
+    padding: 0 4px;
+}
+.group-operator {
+    color: var(--secondary-color);
+    font-weight: 700;
+    padding: 0 4px;
+}

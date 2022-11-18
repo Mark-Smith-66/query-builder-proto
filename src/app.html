@@ -1,8 +1,12 @@
 <template>
 	<div class="app">
+		<!-- LHS Trait Drawer -->
 		<c-trait-drawer traitmeta={traitmetadata}></c-trait-drawer>
+		<!-- Content Area -->
 		<div class="content">
+			<!-- Top Area -->
 			<div class='slds-grid slds-grid_vertical-align-end top-area'>
+				<!-- Col 1 form fields/readable query -->
 				<div class='slds-col query-column'>
 					<div>
 						<label for="segmentName">Segment Name</label>
@@ -14,14 +18,18 @@
 					</div>
 					<lightning-layout class="query-header" vertical-align="end">
 						<span if:true={invalidQuery}>
-							<svg  class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium warning-button css-i4bv87-MuiSvgIcon-root" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="WarningIcon" aria-label="Invalid Query! Missing Rule data" data-mui-internal-clone-element="true"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"></path></svg>
+							<svg focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="WarningIcon" aria-label="Invalid Query! Missing Rule data" data-mui-internal-clone-element="true"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"></path></svg>
 						</span>
 						<label>Query</label>
 					</lightning-layout>
 					<div class={queryBoxClass}>
-						<lightning-formatted-rich-text value={readableQuery}></lightning-formatted-rich-text>
+						<c-readable-group group={query} parent={query}>
+						</c-readable-group>
+						<!--<lightning-formatted-rich-text value={readableQuery}></lightning-formatted-rich-text>-->
+						<!--<c-readable-rule query={query}></c-readable-rule>-->
 					</div>
 				</div>
+				<!-- Col 2 - counts box -->
 				<div class='slds-col slds-size_1-of-3 counts-column'>
 					<div class="slds-card count-box">
 						<div class="slds-grid slds-wrap count-container">
@@ -51,11 +59,13 @@
 					</div>
 				</div>
 			</div>
+			<!-- Rule Builder -->
 			<c-group grp={query} onaddgroup={addRuleGroup} ondeletegroup={deleteRuleGroup} onaddrule={addRule}
 				ondeleterule={deleteRule} onaddtraittorule={addTraitToRule} onruleoperatorchange={operatorChange}
-				onrulevaluechange={ruleValueChange} onmoverule={moveRule}>
+				onrulevaluechange={ruleValueChange} onmoverule={moveRule} scrollel={scrollElID}>
 			</c-group>
 		</div>
+		<!-- Footer -->
 		<div class="slds-is-fixed footer">
 			<div class='slds-grid slds-grid_align-end nav-button-container'>
 				<button>Cancel</button>

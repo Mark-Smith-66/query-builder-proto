@@ -5,19 +5,41 @@ export default class App extends LightningElement {
   @track savedQuery// = {"operator":"INTERSECT","value":[{"operator":"EQUALS","trait":"DTV_HH_DEMO_HH_AGE_1824","trait_id":1197,"values":[{"value":"YES","value_id":"145581"}]},{"operator":"IN","trait":"DTV_HH_DEMO_ETHNICITY","trait_id":1719,"values":[{"value":"AFRICAN AMERICAN","value_id":"74323"},{"value":"ASIAN","value_id":"157506"},{"value":"HISPANIC","value_id":"92067"},{"value":"WHITE","value_id":"145378"}]},{"operator":"INTERSECT","value":[{"operator":"EQUALS","trait":"DTV_HH_DEMO_AARP_MODEL","trait_id":1087,"values":[{"value":"SOMEWHAT LIKELY","value_id":"127419"}]},{"operator":"NOT IN","trait":"TV_VIEWERSHIP_CONSUMPTION_BIG_5","trait_id":1843,"values":[{"value":"1-5","value_id":"521829340"},{"value":"16-20","value_id":"81980"}]}]}]}
   @track countsQuery
   @track counts;
-  @track _query = {}
-  
+  @track _query = {} // likely @api
 
-  colors = {
-    err: '#ff1744',
-    rule: '#21528c',
-    operator: '#7a267b'
-  }
+  // Reconstitue a (passed in) query to our internal structure
+  // Looks like: 
+  /*
+    { 
+        id: 'root' for top level group || uuid,
+        isGroup: <true|false>, 
+        operator: <rule or group operator>
+        data: present if group - <array of child groups/rules all following this structure>
+        parentId: <id of parent - if not root group>,
+        trait: present if not group - <trait meta object>
+        value: present if not group - <array of selected trait values>.
+        level: how many nesting levels deep we are
+    }
 
+    Trait Meta Object looks like this:
+    {
+      "ALIAS": ...,
+      "ALLOWED_GROUP": ...,
+      "ALLOWED_TENANT": ...,
+      "CATEGORY": ...,
+      "SUB_CATEGORY": ...,
+      "TRAIT": ...,
+      "TRAIT_ID": ...,
+      "VALUE_TYPE": ...,
+      "VAL_OPTS": string of pipe separated value/valueid pairs - each pair separated by a '^'
+                  ex: "HEAVY^92037|MEDIUM^121351|LIGHT^175065"
+    },
+  */
   constructor() {
     super()
     this._query  = this.reconstitute()
   }
+
   // Getter/Setter for internal Query JSON
   get query() {
     return this._query
@@ -26,6 +48,7 @@ export default class App extends LightningElement {
     this._query = query
   }
 
+  // Gets Local Mock Traits
   get traitmetadata() {
     return traitmeta;
   }
@@ -39,6 +62,7 @@ export default class App extends LightningElement {
         isGroup: true,
         operator: 'INTERSECT',
         data: [],
+        level: 0
       }
       if (this.savedQuery) {
         obj.op = this.savedQuery.operator
@@ -53,6 +77,7 @@ export default class App extends LightningElement {
           parentId: pid,
           isGroup: true,
           operator: g.operator,
+          level: g.level++,
           data: []
         }
         
@@ -66,7 +91,8 @@ export default class App extends LightningElement {
         isGroup: false,
         operator: g.operator,
         value: g.values.map(v => `${v.value}^${v.value_id}`),
-        trait: traitmeta.find(t => t.TRAIT_ID === g.trait_id)
+        trait: traitmeta.find(t => t.TRAIT_ID === g.trait_id),
+        level: g.level + 1
       }
     }
   }
@@ -75,6 +101,7 @@ export default class App extends LightningElement {
   }
 
   // Generate unique id
+  // Crude - can substitute with anything better
   getuuid() {
     return 'xxxx-xxxx-xxx-xxxx'.replace(/[x]/g, function (c) {
       var r = (Math.random() * 16) | 0,
@@ -115,13 +142,15 @@ export default class App extends LightningElement {
     if (group) {
       // If parent found - add new group
       let rid = this.getuuid()
+      this.scrollElID = rid;
+
       group.data.push({
         parentId: pid,
         id: rid,
         isGroup: true,
         operator: 'INTERSECT',
         data: [],
-        odd: !group.odd ? true : false
+        level: group.level + 1
       })
       
       // replace query
@@ -157,13 +186,16 @@ export default class App extends LightningElement {
     if (group) {
       // If parent found - add new rule
       let rid = this.getuuid()
+      this.scrollElID = rid;
+
       group.data.push({
         parentId: pid,
         id: rid,
         isGroup: false,
         operator: null,
         value: null,
-        trait: null
+        trait: null,
+        level: group.level + 1
       })
 
       // replace query
@@ -171,25 +203,37 @@ export default class App extends LightningElement {
     }
   }
 
+  // Handle Move a Rule/Group to a new position
   moveRule = (e) => {
     const gid = e.detail.groupId
     const id = e.detail.id
+
+    // Group/Position to move to 
     let toIndex = e.detail.moveIndex
     const toGroup = e.detail.moveGroupId
 
+    // Find Parent Group to add to
     let newQuery = JSON.parse(JSON.stringify(this._query))
     let group = this.findGroup(newQuery, gid)
     if (group) {
+      // Get current position in parent group
       let fromIndex = group.data.findIndex(e => e.id === id)
       if (fromIndex !== -1) {
         
+        // Adjust toIndex to base 0
         if (toIndex > fromIndex && gid == toGroup) toIndex = toIndex - 1;
-        console.log(`move ${id} from ${fromIndex} in ${gid} to ${toIndex} in ${toGroup}`)
+        
+        // Remove element from existing group
+        //console.log(`move ${id} from ${fromIndex} in ${gid} to ${toIndex} in ${toGroup}`)
         const element = group.data.splice(fromIndex, 1)[0]; 
         
+        // Find new group to move to
         let moveGroup = this.findGroup(newQuery, toGroup)
         if (moveGroup) {
+          // Change element parent to new group
+          // and add to new position
           element.parentId = toGroup;
+          element.level = moveGroup.level + 1
           moveGroup.data.splice(toIndex, 0, element);
         }
         
@@ -307,18 +351,6 @@ export default class App extends LightningElement {
 
   }
 
-  // Helper function to map style object to string
-  mapStyle = (s) => {
-    let str = ''
-    const earr = Object.entries(s)
-    let i = 0
-    for (const entry of earr) {
-      str += `${entry[0]}: ${entry[1]}`
-      if (i++ < earr.length - 1) str += ';'
-    }
-    return str
-  }
-
   // Return True if query is missing data
   isInvalidQuery(qs) {
     let invalid = false
@@ -339,6 +371,7 @@ export default class App extends LightningElement {
     return invalid
   }
 
+  // Get class for query box based on query validity
   get queryBoxClass() {
     const invalid = this.isInvalidQuery(this._query)
     return invalid ? 'slds-card query-box invalid' : 'slds-card query-box'
@@ -363,18 +396,14 @@ export default class App extends LightningElement {
     return this.savedQuery === apiQuery
   }
 
-  // Return the parsed Human-Readable Query
-  get readableQuery() {
-    let s = this.parseQuery(this._query)
-    return s
-  }
-
   // Only show counts if counts are present and they are calculated
   // for the current query
   get hasCounts() {
     return this.counts && !this.isCountsDisabled && (this.counts && JSON.stringify(this._query) === this.countsQuery)
   }
 
+  // This could be refactored to a small component
+  // so that we could style via css classes
   get noCountsText() {
     if (this.invalidQuery) {
       return '<span style="color: #ff1744">&lt;Invalid Query&gt;</span>'
@@ -387,8 +416,8 @@ export default class App extends LightningElement {
   getCounts = () => {
     const apiQuery = JSON.stringify(this.getQueryJSON())
     this.countsQuery = JSON.stringify(this._query)
-    console.log(apiQuery)
-    console.log(this.countsQuery)
+    //console.log(apiQuery)
+    //console.log(this.countsQuery)
     alert(apiQuery)
     this.counts =  [
        { name: 'DTV_ADDRESSABLE', cnt:  parseInt(`${Math.random() * 100000}`, 10).toLocaleString()},
@@ -401,19 +430,6 @@ export default class App extends LightningElement {
        { name: 'OV_MOBILE', cnt: parseInt(`${Math.random() * 100000}`, 10).toLocaleString()},
        { name: 'OV_PC', cnt: parseInt(`${Math.random() * 100000}`, 10).toLocaleString()}
     ]
-  }
-
-  
-  // TODO: Proper name/value mapping as needed by Data API
-  mapOperator = (o) => {
-    let op = o;
-    if (o === 'INTERSECT') op = 'AND';
-    else if (o === 'UNION') op = 'OR';
-    else if (o === 'MINUS') op = 'SUBTRACT';
-    else if (o === 'EQUALS') op = '=';
-    else if (o === 'NOT') op = '!=';
-    
-    return op;
   }
 
   // Get Query JSON 
@@ -444,98 +460,5 @@ export default class App extends LightningElement {
     }
 
     return jq
-  }
-
-  // Parse query JSON to html string
-  // This is quick and dirty 0 subject to change
-  parseQuery = (qs = query, lvl = 0) => {
-    let s = ''
-
-    // Object parsed is a Group
-    if (qs.isGroup) {
-      // Indent Group level
-      let groupStyle = {
-        paddingLeft: `${lvl * 4}px`
-      }
-      
-      // Sub-Groups from root begin on new line with a left-paren
-      if (qs.id !== 'root') {
-        lvl++
-        s += `<div style="${groupStyle.toString}">(`
-      }
-
-      // Parse Children
-      qs.data.forEach((r, idx) => {
-        // Children are indented slightly from parent
-        let ruleStyle = {
-          color: this.colors.rule,
-          'padding-left': `${lvl * 6}px`
-        }
-        
-        // Each child begins on a new line - indented from parent
-        s += `<div style="${this.mapStyle(ruleStyle)}">`
-      
-        // Parse the child, w/ new level
-        s +=  this.parseQuery(r, lvl)
-
-        // Separate any children with Group Operator
-        // Note: Operator omitted if only one child exists
-        if (idx < qs.data.length - 1) {
-          s += ` <b style="color:${this.colors.operator}">${this.mapOperator(qs.operator)}</b> `
-        }
-        s += '</div>'
-      })
-
-      // If Group has no children - add missing text
-      if (qs.data.length === 0) {
-        s += `<span style="color:${this.colors.err}">No Rules${
-          qs.id !== 'root' ? ' in Group' : ''
-        }</span>`
-      }
-      
-      // Add end paren for sub-group
-      // Note: there are no parens for the root group
-      s += qs.id === 'root' ? '' : ')</div>'
-    } else {
-      // Object Parsed is a Rule
-      if (qs.trait) {
-
-        // If trait present - add
-        // <alias> <operator> <values>
-        
-        // Output trait alias
-        s += `<span style='font-weight:600'>${qs.trait.ALIAS}</span>`
-
-        // Output Operator or missing operator text if not present
-        s += this.mapOperator(qs.operator)
-          ? ` <span style="">${this.mapOperator(qs.operator)}</span> `
-          : ` <span style="color:${this.colors.err}">&lt;missing operator&gt;</span> `
-        
-        // IN/NOT IN operators have values surrounded by parens
-        let isInClause = qs.operator && qs.operator.indexOf('IN') !== -1
-        if (isInClause) s += '('
-
-        // Output Selected Values
-        if (qs.value) {
-
-          // Comma separate each selected value
-          // Note: comma omitted if only a single value is selected
-          s+= '<span style="font-weight:600">' + qs.value.map((v, i) => {
-            const rv = v.split('^')
-            return rv[0]
-          }).join(', ') + '</span>'
-        } else {
-          // No values present - output missing values text
-          s += ` <span style="color:${this.colors.err}">&lt;missing value&gt;</span> `
-        }
-
-        // end paren for IN/NOT IN Operators
-        if (isInClause) s += ')'
-      } else {
-        // Missing trait - output missing trait text
-        s += ` <span style="color:${this.err}">&lt;missing trait&gt;</span> `
-      }
-    }
-    return s
   }
 }

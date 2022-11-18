@@ -9,19 +9,17 @@ export default class DropSpot extends LightningElement {
   
   isDragOver = false;
 
-  get isAllowedDrop() {
-    return true
-    //return this.position === 'before' ||
-    //  (this.position === 'after' && this.index == this.size - 1)
-  }
-
+  /* Getter for drop spot class */
   get spotClass() {
     return !this.isDragOver ? 'slds-grid drop-child-spot' : 'slds-grid drop-child-spot drag'
   }
-  get parentSpotClass() {
+
+  /* Getter for drop spot class */
+  get spotContainerClass() {
     return !this.isDragOver ? 'slds-grid drop-parent-spot' : 'slds-grid drop-parent-spot drag'
   }
 
+  /* Getter for connection class */
   get connectionClass() {
     if ((this.position === 'after' && this.dropIndex != this.size) || (this.position === 'before' && this.size > 0))
      return 'connection-area';
@@ -29,18 +27,22 @@ export default class DropSpot extends LightningElement {
     return '';
   }
 
+  // Get adjusted index in group to drop 
+  // position 'before' is current index, 'after' is next index 
   get dropIndex() {
     return (this.position === 'before') ? this.index : this.index + 1;
   }
 
+  // Parse drag information from dataTransfer to 
+  // determine if this spot is valid for that element to be dropped in
   isValidDropTarget = (event) => {
     const dataIndex = this.getDataIndex(event)
     if (!dataIndex) return false;
 
-    //console.log(`${dataIndex.groupId}:${this.gid} - ${dataIndex.index}:${this.dropIndex} ${dataIndex.index + 1}`)
-    //console.log(dataIndex.groupId == this.gid && dataIndex.index == this.dropIndex ? 'T' : 'F')
-    //console.log(dataIndex.groupId == this.gid && (dataIndex.index + 1) == this.dropIndex ? 'T' : 'F')
+    // Can't move group to self
+    if (dataIndex.id === this.gid) return false;
 
+    // Can't drop immediately before or after self in samne group (as this would keep you at same position)
     if ((dataIndex.groupId == this.gid && dataIndex.index == this.dropIndex) ||
         (dataIndex.groupId == this.gid && dataIndex.index + 1 == this.dropIndex)) {
        return false
@@ -61,17 +63,13 @@ export default class DropSpot extends LightningElement {
 
   // Handle Drag Enter Event
   onDragEnter = (event) => {
-    //console.log(`${this.getDataIndex(event)} ${this.index}`)
-    // Set move cusor effect
     if (this.isValidDropTarget(event)) {
       this.isDragOver = true
-      //console.log('allowed')
     
       // Set move cusor effect
-      // Use greenish background color to highlight area can be dropped into
       event.dataTransfer.dropEffect = 'move'
     } else {
-     // console.log('not allowed')
+      // set 'not allowed' cursor effect
       event.dataTransfer.dropEffect = 'none'
     }
   }
@@ -86,12 +84,11 @@ export default class DropSpot extends LightningElement {
     this.isDragOver = false
 
     if (this.isValidDropTarget(event)) {
-      this.getTransferData(event).then((r) => {
-        console.log(`move ${r.id}:${r.parentId} to ${this.dropIndex} in ${this.gid}`)
-        const e = new CustomEvent('moverule', {
+      const dataIndex = this.getDataIndex(event)
+      const e = new CustomEvent('moverule', {
           detail: {
-            groupId: r.parentId,
-            id: r.id,
+            groupId: dataIndex.groupId,
+            id: dataIndex.id,
             moveGroupId: this.gid,
             moveIndex: this.dropIndex
           },
@@ -99,12 +96,19 @@ export default class DropSpot extends LightningElement {
           composed: true
         })
         this.dispatchEvent(e)
-      })
     }
   }
 
+  // Parse dataTransfer data containing ids/index to move from (should be an array of 1)
+  /* This is crude logic - can probably be done better
+      valid droppable items have a type in the following format
+      item_<current index>_<parent group id>_<item id>
+  */
   getDataIndex = (event) => {
+    // Should be an array
     for (const item of event.dataTransfer.items) {
+      // Make sure it's a valid droppable item
+      // 
       if (item.type.startsWith('index')) {
         const idx = item.type.split('_')
         return {
@@ -116,23 +120,5 @@ export default class DropSpot extends LightningElement {
     }
 
      return null;
-  }
-  getTransferData = (event) => {
-    return new Promise((resolve, reject) => {
-      let ruleItem = null;
-      for (const item of event.dataTransfer.items) {
-        if (item.type === 'text/rule') {
-         ruleItem = item
-        }
-      }
-
-      if (ruleItem) {
-        ruleItem.getAsString(r => {
-          resolve(JSON.parse(r))
-        })
-      } else {
-        reject();
-      }
-    })
   }
 }

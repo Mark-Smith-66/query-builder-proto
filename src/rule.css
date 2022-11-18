@@ -32,6 +32,23 @@
   border: 2px solid #000;
 }
 
+/* Details */
+.trait-label {
+  font-weight: 700;
+  padding-right: 3px;
+}
+.trait-category {
+  color: var(--secondary-color);
+  font-weight: 500;
+}
+.trait-sub-category {
+  color: var(--primary-color);
+  font-weight: 500;
+}
+.trait-alias {
+  font-weight: 500;
+}
+
 /* Operator column */
 .operator-column label {
   display: block;

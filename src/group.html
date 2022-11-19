@@ -1,7 +1,9 @@
 <template>
   <div class='slds-grid'>
+    <!-- Connection Area -->
     <div class={connectionClass}></div>
     <div class={groupClass} data-id={grp.id} draggable={isDraggable} ondragstart={onDragStart}>
+      <!-- Operator/Button Area -->
       <div class='slds-grid slds-grid_vertical-align-end slds-grid_align-spread'>
         <div class='slds-col'>
           <select if:false={isreadonly} onchange={onConditionChange}>
@@ -17,18 +19,23 @@
           <button onclick={addRule}>Add Rule</button>
         </div>
       </div>
+      <!-- Drop as first item in group spot -->
       <c-drop-spot gid={grp.id} index=0 size={grp.data.length} position='before'></c-drop-spot>
-
+      <!-- Nested Childre -->
       <template for:each={grp.data} for:item='c' for:index='idx'>
         <div class="child-container" key={c.id}>
+          <!-- Child Group -->
           <c-group scrollel={scrollel} isreadonly={isreadonly} if:true={c.isGroup} grp={c} parent={grp} index={idx}>
           </c-group>
+          <!-- Child Rule -->
           <c-rule scrollel={scrollel} isreadonly={isreadonly} if:false={c.isGroup} rule={c} parent={grp} index={idx}>
           </c-rule>
+          <!-- After Child Drop Spot -->
           <c-drop-spot gid={c.parentId} index={idx} size={grp.data.length} position='after'>
           </c-drop-spot>
         </div>
       </template>
+      <!-- Delete Icon -->
       <template if:true={allowDelete}>
         <div class='slds-is-absolute delete-icon-container' onclick={deleteGroup}>
           <svg class="" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="HighlightOffIcon">

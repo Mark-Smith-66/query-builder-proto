@@ -1,13 +1,17 @@
 <template>
   <div class='slds-grid' onvaluechange={onValueChange}>
+    <!-- Connection Area -->
     <div class={connectionClass}></div>
     <div data-id={rule.id} class={ruleWrapperClass} draggable={isDraggable} ondragstart={onDragStart}>
-      <div if:true={emptyRule} class="rule empty" ondragover={onDragOver} ondragenter={onDragEnter}
+      <!-- Empty Rule -->
+      <div if:true={emptyRule} class={emptyRuleClass} ondragover={onDragOver} ondragenter={onDragEnter}
         ondragleave={onDragLeave} ondrop={onDrop}>
         Drop Trait Here...
       </div>
+      <!-- Not Empty Rule -->
       <div if:false={emptyRule} class="rule filled">
         <div class='slds-grid'>
+          <!-- Col 1 - Trait Data -->
           <div class='slds-col slds-size_7-of-12'>
             <div>
               <span class='trait-label'>Category:</span><span class='trait-category'>{rule.trait.CATEGORY}</span>
@@ -19,6 +23,7 @@
               <span class='trait-label'>Trait:</span><span class='trait-alias'>{rule.trait.ALIAS}</span>
             </div>
           </div>
+          <!-- Col 2 - Operator -->
           <div class='slds-col slds-size_2-of-12 operator-column'>
             <label for="operator">Operator</label>
             <select if:false={isreadonly} id="operator" onchange={onOperatorChange}>
@@ -29,6 +34,7 @@
             </select>
             <div if:true={isreadonly}>{selectedOperator}</div>
           </div>
+          <!-- Col 3 - Values -->
           <div class='slds-col slds-size_3-of-12 value-column'>
             <label for="value">Value(s)</label>
             <c-value-select if:false={isreadonly} rule={rule} allowmultiselect={allowMultiSelect}
@@ -39,6 +45,7 @@
 
         </div>
       </div>
+      <!-- Delete Icon -->
       <div if:false={isreadonly} class='slds-is-absolute delete-icon-container' onclick={deleteRule}>
         <svg focusable="false" aria-hidden="true" viewBox="0 0 24 24">
           <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"></path>

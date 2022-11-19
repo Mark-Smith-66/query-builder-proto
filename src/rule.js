@@ -9,9 +9,11 @@ export default class Rule extends LightningElement {
   @api scrollel
 
   selectElement = null
+  isDragOver = false;
 
   // Rendered Callback hook
   renderedCallback() {
+    // If Rule is current focused element - scroll to it.
     const s = this.template.querySelector(`[data-id="${this.scrollel}"]`)
     if (s) {
       s.scrollIntoView()
@@ -29,6 +31,11 @@ export default class Rule extends LightningElement {
     if (this.hasNextSibling()) r+= ' not-last-child'
 
     return r
+  }
+
+  // Empty Rule Class
+  get emptyRuleClass() {
+    return `rule empty ${this.isDragOver ? 'drag' : ''}`
   }
 
   // get rule wrapper class
@@ -142,7 +149,6 @@ export default class Rule extends LightningElement {
     event.dataTransfer.effectAllowed = 'move'
 
     // Serialize selected trait and set as transfer data
-    event.dataTransfer.setData('text/rule', JSON.stringify(this.rule))
     event.dataTransfer.setData(`index_${this.index}_${this.rule.parentId}_${this.rule.id}`, this.index);
   }
 
@@ -166,10 +172,9 @@ export default class Rule extends LightningElement {
   // Handle Drag Enter Event
   onDragEnter = (event)=> {
     if (this.isValidDropObject(event)) {
+      this.isDragOver = true
       // Set move cusor effect
-      // Use greenish background color to highlight area can be dropped into
       event.dataTransfer.dropEffect = 'move'
-      event.currentTarget.style.backgroundColor = '#ddfbdd'
     } else {
       event.dataTransfer.dropEffect = 'none'
     }
@@ -177,15 +182,13 @@ export default class Rule extends LightningElement {
 
   // Handle Drag Leave Event
   onDragLeave = (event) => {
-    // Revert to original background color
-    event.currentTarget.style.backgroundColor = '#f0f3f5'
+    this.isDragOver = false
   }
 
   // Handle Drop Event
   onDrop = (event) => {
+    this.isDragOver = false
     if (this.isValidDropObject(event)) {
-      event.currentTarget.style.backgroundColor = '#f0f3f5'
-
       this.getTransferData(event).then((trait) => {
         // Reconsitute dropped trait from event data
         //const trait = JSON.parse(event.dataTransfer.getData('text'))
@@ -250,7 +253,7 @@ export default class Rule extends LightningElement {
 
   }
 
-  
+  // Get the trait data from the dropped Rule
   getTransferData = (event) => {
     return new Promise((resolve, reject) => {
       let traitData = null;

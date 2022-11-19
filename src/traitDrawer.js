@@ -180,9 +180,4 @@ export default class Rule extends LightningElement {
     e.dataTransfer.setData('text/trait', dt)
     
   }
-
-  // Handle drag
-  onDrag = (e) =>{
-    // Use move icon vs copy icon
-  }
 }

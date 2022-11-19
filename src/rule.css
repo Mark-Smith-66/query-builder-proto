@@ -28,6 +28,9 @@
   font-weight: bold;
   line-height: 36px;
 }
+.rule.empty.drag {
+  background-color: #ddfbdd
+}
 .rule.filled {
   border: 2px solid #000;
 }

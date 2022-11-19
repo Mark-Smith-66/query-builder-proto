@@ -1,9 +1,14 @@
+/* Empty Group text style */
 .empty-group {
   color: var(--error-color);
 }
+
+/* Generic Group Style */
 .group {
   padding-left: 4px;
 }
+
+/* Group operator text style */
 .group-operator {
     color: var(--secondary-color);
     font-weight: 700;

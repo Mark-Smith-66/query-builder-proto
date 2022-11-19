@@ -1,14 +1,19 @@
 <template>
   <div
     class="slds-grid slds-wrap slds-is-fixed slds-grid_vertical-align-start slds-grid_align-center trait-filter-column">
+    <!-- Title -->
     <div class='slds-col slds-size_1-of-1 drawer-title'>
       Traits by Category
+
+      <!-- TODO: Refresh button -->
     </div>
     <div class='slds-col slds-size_1-of-1'>
+      <!-- Filter Text Row --->
       <div class="filter-section-row">
         <label for="categories">Filter...</label>
         <input type='text' id='filter' onkeyup={onFilterChange}></input>
       </div>
+      <!-- Category Filter Row -->
       <div class="filter-section-row">
         <label for="categories">Category</label>
         <select id="categories" onchange={onSelectCategory}>
@@ -18,6 +23,7 @@
           </template>
         </select>
       </div>
+      <!-- Sub Category Filter Row -->
       <div class="filter-section-row">
         <label for="subCats">Sub Category</label>
         <select id="subcats" onchange={onSelectSubCategory}>
@@ -27,10 +33,12 @@
           </template>
         </select>
       </div>
+      <!-- Directions Row -->
       <div class="directions-section-row">
         {directions}
       </div>
     </div>
+    <!--Filtered Traits Area -->
     <div class='slds-col slds-size_1-of-1 filtered-trait-area'>
       <template for:each={traits} for:item='t'>
         <div id='{t.TRAIT_ID}' key={t.TRAIT_ID} class="selectable-trait" draggable=true ondragstart={onDragStart}

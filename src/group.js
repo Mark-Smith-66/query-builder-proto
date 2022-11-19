@@ -9,6 +9,7 @@ export default class Group extends LightningElement {
 
   // Rendered Callback hook
   renderedCallback() {
+    // If Group is current focused element - scroll to it.
     const s = this.template.querySelector(`[data-id="${this.scrollel}"]`)
     if (s) {
       s.scrollIntoView()

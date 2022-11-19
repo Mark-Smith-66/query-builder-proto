@@ -1,8 +1,10 @@
 <template>
   <div>
+    <!-- Missing Trait Area -->
     <span if:true={emptyRule} class='missing-trait'>
       &lt;missing trait&gt;
     </span>
+    <!-- Not Empty Rule <alias> <operator> <values>  -->
     <span if:false={emptyRule} class={ruleClass}>
       <span>{rule.trait.ALIAS}</span>
     <span class={operatorClass}>{operator}</span>

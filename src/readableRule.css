@@ -1,21 +1,32 @@
+/* Missing Trait Style */
 .missing-trait {
   color: var(--error-color);
 }
+
+/* Generic Rule Style */
 .rule {
     color: var(--primary-color);
     padding-left: 6px;
 }
+
+/* Root Rule Style */
 .rule.root {
   padding-left: 0px;
 }
+
+/* Error Rule Style */
 .rule .error {
     color: var(--error-color);
     font-weight: bold;
 }
+
+/* Rule Operator Style */
 .rule .operator {
     color: var(--secondary-color);
     padding: 0 4px;
 }
+
+/* Group Operator Style for Child Rules */
 .group-operator {
     color: var(--secondary-color);
     font-weight: 700;

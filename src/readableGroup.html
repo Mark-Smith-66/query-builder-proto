@@ -1,13 +1,17 @@
 <template>
+  <!-- Empty Group -->
   <div if:true={emptyGroup} class='empty-group'>
     {emptyGroupText}
   </div>
+  <!-- Group with Children -->
   <div if:false={emptyGroup} class={groupClass}>
     <span if:false={isRoot}>(</span>
     <template for:each={group.data} for:item='c' for:index='idx'>
       <div class="child-container" key={c.id}>
+        <!-- Child Group -->
         <c-readable-group if:true={c.isGroup} group={c} parent={group}>
         </c-readable-group>
+        <!-- Child Rule -->
         <c-readable-rule if:false={c.isGroup} rule={c} parent={group}>
         </c-readable-rule>
       </div>
